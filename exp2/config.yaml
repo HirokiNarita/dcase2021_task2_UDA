@@ -1,7 +1,7 @@
 IO_OPTION:
   INPUT_ROOT: '/media/hiroki/HDD1TB/research/dcase2021_task2/datasets'
   OUTPUT_ROOT: '/media/hiroki/HDD1TB/research/DCASE_experiments/domain_adaptation/exp2'
-  PREMODEL_ROOT: '/home/hiroki/research/dcase2021_task2/input/PANNs/pre_trained_model/ResNet38_mAP=0.434.pth'
+  PREMODEL_ROOT: '/media/hiroki/HDD1TB/research/DCASE_experiments/domain_adaptation/exp2/models'
   
 param:
   # feature
@@ -13,7 +13,7 @@ param:
   fmax: 7800
   # dataloader
   lr : 0.001
-  batch_size : 128
+  batch_size : 64
   shuffle : True
   num_epochs : 50
   # etc

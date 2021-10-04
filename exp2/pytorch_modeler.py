@@ -319,3 +319,88 @@ def run_training(model, dataloaders_dict, writer, optimizer):
         logger.info(epoch_log)
     output_dict = {'train':output_tr, 'val_src':output_src, 'val_tgt':output_tgt}
     return output_dict, model
+
+def extract_fisher(model, dataloaders_dict, writer, optimizer):
+    scaler = torch.cuda.amp.GradScaler()
+    device = torch.device("cuda:0" if torch.cuda.is_available() else 'cpu')
+    print("use:", device)
+    model.to(device)
+    criterion = nn.CrossEntropyLoss()
+    n_epochs = config['param']['num_epochs']
+    for epoch in range(n_epochs):
+        output_tr = train_fn(
+            data_loader=dataloaders_dict['train'],
+            model=model,
+            optimizer=optimizer,
+            criterion=criterion,
+            scaler=scaler,
+            device=device,
+            )
+        output_src = validate_fn(
+            data_loader=dataloaders_dict['valid_source'],
+            model=model,
+            criterion=criterion,
+            device=device,
+            )
+        output_tgt = validate_fn(
+            data_loader=dataloaders_dict['valid_target'],
+            model=model,
+            criterion=criterion,
+            device=device,
+            )
+        
+        tr_loss, src_loss, tgt_loss = output_tr['loss'], output_src['loss'], output_tgt['loss']
+        src_pred, src_label = output_src['pred'], output_src['section_label']
+        tgt_pred, tgt_label = output_tgt['pred'], output_tgt['section_label']
+        
+        src_acc = metrics.accuracy_score(src_label, np.argmax(src_pred, axis=1))
+        tgt_acc = metrics.accuracy_score(tgt_label, np.argmax(tgt_pred, axis=1))
+        epoch_log = (
+            f'epoch:{epoch+1}/{n_epochs},'
+            f' tr_loss:{tr_loss:.6f},'
+            f' src_loss:{src_loss:.6f},'
+            f' src_acc:{src_acc:.6f},'
+            f' tgt_loss:{tgt_loss:.6f},'
+            f' tgt_acc:{tgt_acc:.6f},'
+        )
+        logger.info(epoch_log)
+    output_dict = {'train':output_tr, 'val_src':output_src, 'val_tgt':output_tgt}
+    return output_dict, model
+
+from torch.autograd import Variable
+import utils
+def estimate_fisher(model, data_loader, sample_size, batch_size=32):
+    # Init
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    model.to(device)
+    #self.old_model = deepcopy(self).to(device)
+    model.eval()
+    #ResNet.freeze_model(self.old_model)
+    fisher = {}
+    ce = torch.nn.CrossEntropyLoss()
+    for n, p in model.named_parameters():
+        fisher[n] = 0 * p.data
+
+    # ----- Freezing layers -------
+    #utils.freeze_parameters(model)
+
+    # ----- Compute --------
+    model.eval()
+    for i, data in enumerate(tqdm(data_loader), 0):
+        model.zero_grad()
+        if i >= sample_size // batch_size:
+            break
+        x, y = data['feature'], data['section_label']
+        x = x.to(device)
+        y = y.to(device)
+        outputs, _ = model(x)
+        loss = ce(outputs, y)
+        loss.backward()
+        for n,p in model.named_parameters():
+            if p.grad is not None:
+                fisher[n] += batch_size * p.grad.data.pow(2)
+        
+    for n, _ in model.named_parameters():
+        fisher[n] /= sample_size
+        fisher[n] = Variable(fisher[n], requires_grad=False)
+    return fisher

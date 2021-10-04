@@ -20,7 +20,7 @@ class CenterLoss(nn.Module):
         if labels == None:
             labels = torch.zeros(x.shape[0]).long().cuda()
         center = self.centers[labels]
-        dist = (x-center).pow(2).sum(dim=-1)
+        dist = (x-center).pow(2)
         loss = torch.clamp(dist, min=1e-12, max=1e+12).mean(dim=-1)
 
         return loss
@@ -81,11 +81,11 @@ class EWCLoss(nn.Module):
     def forward(self, cur_model):
         loss_reg = 0
         for (name, param), (_, param_old) in zip(cur_model.named_parameters(), self.frozen_model.named_parameters()):
-            if 'fc' in name:
+            if 'effnet.classifier.centers' in name:
                 continue
             loss_reg += torch.sum(self.fisher[name]*(param_old-param).pow(2))/2
-        return self.lambda_ewc * loss_reg
 
+        return self.lambda_ewc * loss_reg
 
 class EfficientNet_b1(nn.Module):
     def __init__(self, num_center=1):
@@ -97,15 +97,17 @@ class EfficientNet_b1(nn.Module):
         self.effnet.forward = self.effnet_forward
         #最終層の再定義
         self.effnet.classifier = CenterLoss(num_class=num_center, num_feature=1280)
+        #self.effnet.classifier = AdaCos(1280, 6)
         # self.spec_augmenter = SpecAugmentation(time_drop_width=32, time_stripes_num=2, 
         #     freq_drop_width=8, freq_stripes_num=2)
 
     def effnet_forward(self, x):
-        x = self.forward_features(x)
-        embedding = self.global_pool(x)
-        if self.drop_rate > 0.:
-            x = F.dropout(embedding, p=self.drop_rate, training=self.training)
-        return self.classifier(x), embedding
+        x = self.effnet.forward_features(x)
+        x = self.effnet.global_pool(x)
+        embedding = x.clone().detach()
+        if self.effnet.drop_rate > 0.:
+            x = F.dropout(x, p=self.effnet.drop_rate, training=self.training)
+        return self.effnet.classifier(x), embedding
     
     def forward(self, x):
         x = x.transpose(1, 3)

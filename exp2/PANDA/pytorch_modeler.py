@@ -64,6 +64,7 @@ def make_dataloader(train_paths, machine_type, mode='training'):
     transform_eval = transforms.Compose([
         prep.extract_melspectrogram(mode='eval')
     ])
+    # debug dataset
     train_dataset = prep.DCASE_task2_Dataset(train_paths[machine_type]['train'], transform=transform_tr)
     valid_source_dataset = prep.DCASE_task2_Dataset(train_paths[machine_type]['valid_source'], transform=transform_eval)
     valid_target_dataset = prep.DCASE_task2_Dataset(train_paths[machine_type]['valid_target'], transform=transform_eval)
@@ -99,64 +100,7 @@ def make_dataloader(train_paths, machine_type, mode='training'):
 #############################################################################
 # training
 #############################################################################
-def calc_auc(y_true, y_pred):
-    auc = metrics.roc_auc_score(y_true, y_pred)
-    p_auc = metrics.roc_auc_score(y_true, y_pred, max_fpr=config["etc"]["max_fpr"])
-    #logger.info("AUC : {}".format(auc))
-    #logger.info("pAUC : {}".format(p_auc))
-    return auc, p_auc
-
-def make_subseq(X, hop_mode=False):
-    
-    n_mels = config['param']['mel_bins']
-    n_crop_frames = config['param']['n_crop_frames']
-    n_hop_frames = config['param']['extract_hop_len']
-    total_frames = len(X.shape[3]) - n_crop_frames + 1
-    subseq = []
-    # generate feature vectors by concatenating multiframes
-    for frame_idx in range(total_frames):
-        subseq.append(X[:,:,frame_idx:(frame_idx+1)*n_crop_frames])
-    subseq = torch.cat(subseq, dim=0)
-    # reduce sample
-    if hop_mode:
-        vectors = subseq[:,:,:: n_hop_frames]
-    
-    return vectors
-
-def extract_model(model, dataloaders_dict):
-    model.eval()
-    #scaler = torch.cuda.amp.GradScaler()
-    device = torch.device("cuda:0" if torch.cuda.is_available() else 'cpu')
-    print("use:", device)
-    model.to(device)
-    for phase in ['train']:
-        labels = []
-        wav_names = []
-        features = []
-        losses = 0
-        for step, sample in enumerate(tqdm(dataloaders_dict[phase])):
-            wav_name = sample['wav_name']
-            wav_names = wav_names + wav_name
-            label = sample['label'].to('cpu')
-            labels.append(label)
-            feature = sample['feature']   # (batch, ch, mel_bins, n_frames)
-            feature = feature.to(device)
-
-            #with torch.cuda.amp.autocast():
-            with torch.no_grad():
-                feature = model(feature)
-            feature = feature.to('cpu')
-            features.append(feature)
-    
-    # processing per epoch
-    features = torch.cat(features, dim=0).detach().numpy().copy()
-    labels = torch.cat(labels, dim=0).detach().numpy().copy()
-    # end
-    output_dicts = {'features': features, 'wav_names': wav_names, 'labels': labels}
-    
-    return output_dicts
-
-def train_fn(data_loader, model, optimizer, ewc_loss, device):
+def train_fn(data_loader, model, optimizer, ewc_criterion, device):
     model.train()
 
     # init
@@ -173,11 +117,12 @@ def train_fn(data_loader, model, optimizer, ewc_loss, device):
     for iter, sample in enumerate(tqdm(data_loader)):
         # expand
         feature = sample['feature'].to(device)
-        section_label = sample['section_label'].to(device)
+        #section_label = sample['section_label'].to(device)
         # propagation
         pred, embedding_feat = model(feature)
+        ewc_loss = ewc_criterion(model)
         loss = pred.mean() + ewc_loss.mean()
-        pred = F.softmax(pred, dim=1)
+        #pred = F.softmax(pred, dim=1)
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
@@ -189,17 +134,17 @@ def train_fn(data_loader, model, optimizer, ewc_loss, device):
         output_dict['section_label'].append(sample['section_label'])
         output_dict['domain_label'].append(sample['domain_label'])
         output_dict['wav_name'].extend(sample['wav_name'])
-        output_dict['pred'].append(pred.to('cpu'))
+        #output_dict['pred'].append(pred.to('cpu'))
     # concat for output
     output_dict['feature'] = torch.cat(output_dict['feature'], dim=0).detach().numpy().copy()
     output_dict['label'] = torch.cat(output_dict['label'], dim=0).detach().numpy().copy()
     output_dict['section_label'] = torch.cat(output_dict['section_label'], dim=0).detach().numpy().copy()
     output_dict['domain_label'] = torch.cat(output_dict['domain_label'], dim=0).detach().numpy().copy()
-    output_dict['pred'] = torch.cat(output_dict['pred'], dim=0).detach().numpy().copy()
+    #output_dict['pred'] = torch.cat(output_dict['pred'], dim=0).detach().numpy().copy()
     
     return output_dict
 
-def validate_fn(data_loader, model, criterion, device):
+def validate_fn(data_loader, model, ewc_criterion, device):
     model.eval()
     # hock
     # def hook(module, input, output):
@@ -221,14 +166,14 @@ def validate_fn(data_loader, model, criterion, device):
     for iter, sample in enumerate(tqdm(data_loader)):
         # expand
         feature = sample['feature'].to(device)
-        section_label = sample['section_label'].to(device)
+        #section_label = sample['section_label'].to(device)
         # propagation
         #with torch.cuda.amp.autocast():
         with torch.no_grad():
             pred, embedding_feat = model(feature)
-            loss = criterion(pred, section_label)
-            pred = F.softmax(pred, dim=1)
-                #pred = torch.max(pred.data, 1)
+            ewc_loss = ewc_criterion(model)
+            loss = pred.mean() + ewc_loss.mean()
+            #pred = torch.max(pred.data, 1)
         # append for output
         output_dict['loss'] = output_dict['loss'] + loss.item()
         output_dict['feature'].append(embedding_feat.to('cpu'))
@@ -236,18 +181,23 @@ def validate_fn(data_loader, model, criterion, device):
         output_dict['section_label'].append(sample['section_label'])
         output_dict['domain_label'].append(sample['domain_label'])
         output_dict['wav_name'].extend(sample['wav_name'])
-        output_dict['pred'].append(pred.to('cpu'))
+        #output_dict['pred'].append(pred.to('cpu'))
     # concat for output
     output_dict['feature'] = torch.cat(output_dict['feature'], dim=0).detach().numpy().copy()
     output_dict['label'] = torch.cat(output_dict['label'], dim=0).detach().numpy().copy()
     output_dict['section_label'] = torch.cat(output_dict['section_label'], dim=0).detach().numpy().copy()
     output_dict['domain_label'] = torch.cat(output_dict['domain_label'], dim=0).detach().numpy().copy()
-    output_dict['pred'] = torch.cat(output_dict['pred'], dim=0).detach().numpy().copy()
+    #output_dict['pred'] = torch.cat(output_dict['pred'], dim=0).detach().numpy().copy()
     
     return output_dict
  
 # ref : https://www.kaggle.com/yasufuminakama/moa-pytorch-nn-starter
-def run_training(model, dataloaders_dict, writer, optimizer, ewc_loss):
+import pandas as pd
+import scipy
+from IPython.display import display
+import utils
+import dcase_util
+def run_training(model, dataloaders_dict, writer, optimizer, ewc_criterion):
     device = torch.device("cuda:0" if torch.cuda.is_available() else 'cpu')
     print("use:", device)
     model.to(device)
@@ -258,36 +208,64 @@ def run_training(model, dataloaders_dict, writer, optimizer, ewc_loss):
             data_loader=dataloaders_dict['train'],
             model=model,
             optimizer=optimizer,
-            ewc_loss=ewc_loss,
+            ewc_criterion=ewc_criterion,
             device=device,
             )
         output_src = validate_fn(
             data_loader=dataloaders_dict['valid_source'],
             model=model,
-            criterion=criterion,
+            ewc_criterion=ewc_criterion,
             device=device,
             )
         output_tgt = validate_fn(
             data_loader=dataloaders_dict['valid_target'],
             model=model,
-            criterion=criterion,
+            ewc_criterion=ewc_criterion,
             device=device,
             )
-        
+        # tr
         tr_loss, src_loss, tgt_loss = output_tr['loss'], output_src['loss'], output_tgt['loss']
-        src_pred, src_label = output_src['pred'], output_src['section_label']
-        tgt_pred, tgt_label = output_tgt['pred'], output_tgt['section_label']
+        tr_feat, tr_sec = output_tr['feature'], output_tr['section_label']
+        # src
+        src_feat, src_sec = output_src['feature'], output_src['section_label']
+        src_label, src_domain = output_src['label'], output_src['domain_label']
+        # tgt
+        tgt_feat, tgt_sec = output_tgt['feature'], output_tgt['section_label']
+        tgt_label, tgt_domain = output_tgt['label'], output_tgt['domain_label']
         
-        src_acc = metrics.accuracy_score(src_label, np.argmax(src_pred, axis=1))
-        tgt_acc = metrics.accuracy_score(tgt_label, np.argmax(tgt_pred, axis=1))
+        # knn
+        src_pred = utils.knn_score(tr_feat, src_feat, n_neighbours=config['param']['n_neighbours'])
+        tgt_pred = utils.knn_score(tr_feat, tgt_feat, n_neighbours=config['param']['n_neighbours'])
+        
+        # pred df
+        src_pred_df = dcase_util.make_pred_df(output_src['wav_name'], src_sec, src_domain, src_label, src_pred)
+        tgt_pred_df = dcase_util.make_pred_df(output_tgt['wav_name'], tgt_sec, tgt_domain, tgt_label, tgt_pred)
+        
+        pred_df = pd.concat([src_pred_df, tgt_pred_df], axis=0)
+        
+        # calc score
+        src_score_df = dcase_util.calc_dcase2021_task2_score(src_pred_df, prefix='Source')
+        tgt_score_df = dcase_util.calc_dcase2021_task2_score(tgt_pred_df, prefix='Target')
+        # per mean auc
+        src_mean_auc, tgt_mean_auc = src_score_df['AUC'].mean(axis=0), tgt_score_df['AUC'].mean(axis=0)
+        # concat score
+        score_df = pd.concat([src_score_df, tgt_score_df], axis=0)
+        mean = pd.DataFrame([score_df.mean()], index=['mean'])
+        hmean = scipy.stats.hmean(score_df, axis=0)
+        hmean = pd.DataFrame([hmean], columns=['AUC', 'pAUC'], index=['h_mean'])
+        score_df = score_df.append([mean, hmean])
+        
         epoch_log = (
             f'epoch:{epoch+1}/{n_epochs},'
             f' tr_loss:{tr_loss:.6f},'
             f' src_loss:{src_loss:.6f},'
-            f' src_acc:{src_acc:.6f},'
+            f' src_mean_auc:{src_mean_auc:.6f},'
             f' tgt_loss:{tgt_loss:.6f},'
-            f' tgt_acc:{tgt_acc:.6f},'
+            f' tgt_mean_auc:{tgt_mean_auc:.6f},'
         )
         logger.info(epoch_log)
+        # show score_df
+        display(score_df)
+        
     output_dict = {'train':output_tr, 'val_src':output_src, 'val_tgt':output_tgt}
-    return output_dict, model
+    return output_dict, model, pred_df

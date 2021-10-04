@@ -1,0 +1,5 @@
+・baseline - IDNN
+・exp1 - Center Loss
+・exp2 - DANN (section classifier)
+・exp3 - DANN + mixup
+・exp4 - mixup pseudo ssl

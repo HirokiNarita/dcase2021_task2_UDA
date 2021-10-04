@@ -1,0 +1,21 @@
+IO_OPTION:
+  INPUT_ROOT: '/media/hiroki/HDD1TB/research/dcase2021_task2/datasets'
+  OUTPUT_ROOT: '/media/hiroki/HDD1TB/research/DCASE_experiments/domain_adaptation/exp4'
+  PREMODEL_ROOT: '/media/hiroki/HDD1TB/research/DCASE_experiments/domain_adaptation/exp4/models'
+  
+param:
+  # feature
+  sample_rate: 16000
+  window_size: 1024
+  hop_size: 512
+  mel_bins: 128
+  fmin: 60
+  fmax: 7800
+  # dataloader
+  lr : 0.001
+  batch_size : 64
+  shuffle : True
+  num_epochs : 10
+  # etc
+  devise : 'cuda'
+  max_fpr : 0.1

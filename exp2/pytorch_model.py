@@ -341,21 +341,22 @@ class EfficientNet_b1(nn.Module):
         #最終層の再定義
         self.effnet.classifier = AdaCos(1280, n_out)
         
-        self.spec_augmenter = SpecAugmentation(time_drop_width=32, time_stripes_num=2, 
-            freq_drop_width=8, freq_stripes_num=2)
+        # self.spec_augmenter = SpecAugmentation(time_drop_width=32, time_stripes_num=2, 
+        #     freq_drop_width=8, freq_stripes_num=2)
 
     def effnet_forward(self, x):
-        x = self.forward_features(x)
-        embedding = self.global_pool(x)
-        if self.drop_rate > 0.:
-            x = F.dropout(embedding, p=self.drop_rate, training=self.training)
-        return self.classifier(x), embedding
+        x = self.effnet.forward_features(x)
+        x = self.effnet.global_pool(x)
+        embedding = x.clone().detach()
+        if self.effnet.drop_rate > 0.:
+            x = F.dropout(x, p=self.effnet.drop_rate, training=self.training)
+        return self.effnet.classifier(x), embedding
     
     def forward(self, x):
         x = x.transpose(1, 3)
         x = self.bn0(x)
         x = x.transpose(1, 3)
-        if self.training:
-            x = self.spec_augmenter(x)
+        # if self.training:
+        #     x = self.spec_augmenter(x)
         pred, embedding = self.effnet(x)
         return pred, embedding
