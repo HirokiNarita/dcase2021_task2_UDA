@@ -51,7 +51,7 @@ def make_log_mel_spectrogram(file_name):
 def make_subseq(X, hop_mode=False):
     # mel_spectrogram is np.ndarray [shape=(n_mels, t)]
     n_frames = config['param']['n_frames']
-    n_hop_frames = config['param']['n_hop_frames']
+    #n_hop_frames = config['param']['n_hop_frames']
     total_frames = X.shape[1] - n_frames + 1
     subseq = []
     # generate feature vectors by concatenating multiframes
@@ -60,9 +60,6 @@ def make_subseq(X, hop_mode=False):
     
     subseq = np.stack(subseq, axis=0)
     # reduce sample
-    if hop_mode:
-        subseq = subseq[:: n_hop_frames,:,:]
-    
     return subseq
 
 

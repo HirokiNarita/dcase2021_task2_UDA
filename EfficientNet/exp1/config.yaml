@@ -1,6 +1,6 @@
 IO_OPTION:
   INPUT_ROOT: '/media/hiroki/HDD1TB/research/dcase2021_task2/datasets'
-  OUTPUT_ROOT: '/media/hiroki/HDD1TB/research/DCASE_experiments/domain_adaptation/IDNN/exp3'
+  OUTPUT_ROOT: '/media/hiroki/HDD1TB/research/DCASE_experiments/domain_adaptation/EfficientNet/exp1'
   
 param:
   # feature
@@ -11,11 +11,11 @@ param:
   fmin: 60
   fmax: 7800
   # subseq
-  n_frames: 5
+  n_crop_frames: 64
   n_hop_frames: 0
   # dataloader
   lr : 0.001
-  batch_size : 2048
+  batch_size : 512
   shuffle : True
   num_epochs : 50
   # etc

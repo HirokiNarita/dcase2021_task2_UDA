@@ -33,7 +33,7 @@ from collections import defaultdict
 
 # original library
 import common as com
-import preprocessing as prep
+import preprocessing_crop as prep
 from augment import Augment
 
 ############################################################################
@@ -58,16 +58,17 @@ def set_seed(seed: int = 42):
 ############################################################################
 # Make Dataloader
 ############################################################################
-def make_dataloader(train_paths, machine_type, debug=False):
-    if debug == True:
-        train_paths[machine_type]['train'] = train_paths[machine_type]['train'][:2]
-        train_paths[machine_type]['valid_source'] = train_paths[machine_type]['valid_source'][:2]
-        train_paths[machine_type]['valid_target'] = train_paths[machine_type]['valid_target'][:2]
-    
-    # debug dataset
-    train_dataset = prep.DCASE_task2_Dataset(train_paths[machine_type]['train'])
-    valid_source_dataset = prep.DCASE_task2_Dataset(train_paths[machine_type]['valid_source'])
-    valid_target_dataset = prep.DCASE_task2_Dataset(train_paths[machine_type]['valid_target'])
+def make_dataloader(train_paths, machine_type):   
+    transform_tr = transforms.Compose([
+        prep.extract_melspectrogram(eval=False)
+    ])
+    transform_eval = transforms.Compose([
+        prep.extract_melspectrogram(eval=True)
+    ])
+    train_dataset = prep.DCASE_task2_Dataset(train_paths[machine_type]['train'], transform=transform_tr)
+    valid_source_dataset = prep.DCASE_task2_Dataset(train_paths[machine_type]['valid_source'], transform=transform_eval)
+    valid_target_dataset = prep.DCASE_task2_Dataset(train_paths[machine_type]['valid_target'], transform=transform_eval)
+
 
     train_loader = torch.utils.data.DataLoader(
         dataset=train_dataset,
@@ -77,25 +78,19 @@ def make_dataloader(train_paths, machine_type, debug=False):
     
     valid_source_loader = torch.utils.data.DataLoader(
         dataset=valid_source_dataset,
-        batch_size=valid_source_dataset.get_per_sample_size(),  # 1バッチにつき一つのスペクトログラム
+        batch_size=1,  # 1バッチにつき一つのスペクトログラム
         shuffle=False,
         )
     
     valid_target_loader = torch.utils.data.DataLoader(
         dataset=valid_target_dataset,
-        batch_size=valid_target_dataset.get_per_sample_size(),
+        batch_size=1,
         shuffle=False,
         )
 
     dataloaders_dict = {"train": train_loader, "valid_source": valid_source_loader, "valid_target": valid_target_loader}
     
     return dataloaders_dict
-
-def get_alpha(num_epochs, loader_len, loader_batch_step, epoch):
-    total_steps = num_epochs * loader_len
-    p = float(loader_batch_step + (epoch - 1) * loader_len) / total_steps
-    alpha = 2.0 / (1.0 + np.exp(-10 * p)) - 1
-    return alpha
 
 #############################################################################
 # training
@@ -117,19 +112,13 @@ def train_fn(data_loader, model, optimizer, epoch, device):
     for iter, sample in enumerate(tqdm(data_loader)):
         # expand
         feature = sample['feature']
-        #feature = aug(feature)
         feature = feature.to(device)
-        
         section_label = sample['section_label'].to(device)
-        alpha = get_alpha(num_epochs=config['param']['num_epochs'],
-                          loader_len=len(data_loader),
-                          loader_batch_step=iter,
-                          epoch=epoch,
-                          )
         # propagation
-        output = model(feature, section_label, alpha)
-        pred = output['pred']
-        loss = pred.mean() + output['adv_loss']
+        classifier_loss = model.forward_classifier(feature, section_label)
+        center_pred = model.forward_centerloss(feature, section_label)
+        loss = classifier_loss + center_pred.mean()
+        # ここまで書いた
         #pred = F.softmax(pred, dim=1)
         optimizer.zero_grad()
         loss.backward()

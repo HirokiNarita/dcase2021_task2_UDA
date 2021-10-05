@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import timm
+import numpy as np
 
 from torchlibrosa.stft import Spectrogram, LogmelFilterBank
 from torchlibrosa.augmentation import SpecAugmentation
@@ -25,17 +26,6 @@ class CenterLoss(nn.Module):
 
         return loss
 
-from torch.autograd import Function
-class GradientReversalLayer(Function):
-    @staticmethod
-    def forward(context, x, constant):
-        context.constant = constant
-        return x.view_as(x) * constant
-
-    @staticmethod
-    def backward(context, grad):
-        return grad.neg() * context.constant, None
-
 class FC_block(nn.Module):
     def __init__(self, in_features, out_features):
         
@@ -43,65 +33,79 @@ class FC_block(nn.Module):
         
         self.fc1 = nn.Linear(in_features, out_features)
         self.bn1 = nn.BatchNorm1d(out_features)
-        self.relu = nn.ReLU(out_features)
+        self.silu = nn.SiLU()
         #self.ln1 = nn.LayerNorm(out_features)
     
     def forward(self, input, ):
         x = input
-        x = self.relu(self.bn1(self.fc1(x)))
+        x = self.silu(self.bn1(self.fc1(x)))
         return x
 
-class IDNN(nn.Module):
-    def __init__(self, in_size=512, out_size=128, classes=6):
-        super(IDNN, self).__init__()
+class CenterLossNet(nn.Module):
+    def __init__(self, in_features, out_features, mid_features=None):
+        
+        super(FC_block, self).__init__()
+        if mid_features == None:
+            mid_features = int(in_features / 2)        
+        
+        self.fc_in = FC_block(in_features, mid_features)
+        self.fc_blocks = [FC_block(mid_features, mid_features)] * 3
+        self.fc_out = nn.Linear(mid_features, out_features)
+    
+    def forward(self, x):
+        x = self.fc_in(x)
+        for i in range(len(self.fc_blocks)):
+            x = self.fc_blocks[i](x)
+        x = self.fc_out(x)
+        return x
+
+class EfficientNet_b1(nn.Module):
+    def __init__(self, n_out=36):
+        super(EfficientNet_b1, self).__init__()
+        self.bn0 = nn.BatchNorm2d(128)
         #モデルの定義
+        self.effnet = timm.create_model('efficientnet_b1', pretrained=True)
+        # forwardをover ride
+        self.effnet.forward = self.effnet_forward
+        #最終層の再定義
+        self.effnet.classifier = nn.Linear(1280, n_out)
+        # section分類用のloss
+        self.effnet_loss = nn.CrossEntropyLoss()
 
-        # F (encoder)
-        self.enc_block1 = FC_block(in_size, 128)
-        self.enc_block2 = FC_block(128, 64)
-        self.enc_block3 = FC_block(64, 32)
-        
-        # D (domain adversarial)
-        self.discriminator_block1 = FC_block(32, 32)
-        self.discriminator_block2 = FC_block(32, classes)
-        self.adv_criterion = nn.CrossEntropyLoss()
-        
-        # C (predictor)
-        self.predictor_block1 = FC_block(32, 64)
-        self.predictor_block2 = FC_block(64, 128)
-        self.predictor_block3 = nn.Linear(128, out_size)
-
-   
-    def forward(self, X, section_label, alpha=1.0):
-        output = {}
-        # [X=(samples, n_mels, t)]
-        # [x=(samples, n_mels, 4)]
-        x = torch.cat([X[:, :, 0:2], X[:, :, 3:5]], dim=2)
-        # flatten [x=(samples, n_mels*4)]
-        x = torch.flatten(x, start_dim=1, end_dim=2)
-        # [x=(samples, n_mels)]
-        y = X[:, :, 2]
-        # network
-        
-        # F (encoder)
-        x = self.enc_block1(x)
-        x = self.enc_block2(x)
-        z = self.enc_block3(x)
-        
-        if self.training == True:
-            # D (domain adversarial)
-            y_D = GradientReversalLayer.apply(z, alpha)
-            y_D = self.discriminator_block1(y_D)
-            y_D = self.discriminator_block2(y_D)
-            adv_loss = self.adv_criterion(y_D, section_label)
-            output['adv_loss'] = adv_loss
-            
-        # C (predictor)
-        y_C = self.predictor_block1(z)
-        y_C = self.predictor_block2(y_C)
-        y_C = self.predictor_block3(y_C)
-        
-        # anomaly score
-        anomaly_score = F.mse_loss(y_C, y, reduction='none')
-        output['pred'] = anomaly_score
-        return output
+        # CenterLoss用のネットワーク
+        self.centerloss_net = CenterLossNet(5000, n_out)
+    
+    def mixup(self, data, label, alpha=1, debug=False, weights=0.6):
+        data = data.to('cpu').detach().numpy().copy()
+        batch_size = len(data)
+        #weights = np.random.beta(alpha, alpha, batch_size)
+        index = np.random.permutation(batch_size)
+        x1, x2 = data, data[index]
+        y1, y2 = label, label[index]
+        x = torch.Tensor([x1[i] * weights + x2[i] * (1 - weights) for i in range(batch_size)])
+        y = torch.Tensor([y1[i] * weights[i] + y2[i] * (1 - weights[i]) for i in range(len(weights))])
+        if debug:
+            print('Mixup weights', weights)
+        return x, label #torch.from_numpy(x).clone().cuda()
+               
+    def effnet_forward(self, x):
+        x = self.effnet.forward_features(x)
+        x = self.effnet.global_pool(x)
+        if self.effnet.drop_rate > 0.:
+            x = F.dropout(x, p=self.effnet.drop_rate, training=self.training)
+        return x
+       
+    def forward_classifier(self, x, section_label):
+        x = x.transpose(1, 3)
+        x = self.bn0(x)
+        x = x.transpose(1, 3)
+        x, section_label = self.mixup(x, section_label)
+        # if self.training:
+        #     x = self.spec_augmenter(x)
+        x = self.effnet(x)
+        loss = self.effnet_loss(x, section_label)
+        return loss
+    
+    def forward_centerloss(self, x):
+        x = self.centerloss_net(x)
+        return x
