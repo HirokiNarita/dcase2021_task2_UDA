@@ -118,7 +118,6 @@ def train_fn(data_loader, model, optimizer, epoch, device):
         classifier_loss = model.forward_classifier(feature, section_label)
         center_pred = model.forward_centerloss(feature, section_label)
         loss = classifier_loss + center_pred.mean()
-        # ここまで書いた
         #pred = F.softmax(pred, dim=1)
         optimizer.zero_grad()
         loss.backward()
@@ -166,8 +165,11 @@ def validate_fn(data_loader, model, device, get_anomaly_score=False):
         section_label = sample['section_label'].to(device)
         # propagation
         with torch.no_grad():
-            output = model(feature, section_label)
-            pred = output['pred']
+            classifier_loss = model.forward_classifier(feature, section_label)
+            center_pred = model.forward_centerloss(feature, section_label)
+            loss = classifier_loss + center_pred.mean()
+            
+            
             if get_anomaly_score == True:
                 anomaly_scores = pred.clone().to('cpu')
                 output_dict['anomaly_scores'].append(anomaly_scores.to('cpu'))
