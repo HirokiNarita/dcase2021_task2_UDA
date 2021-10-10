@@ -1,6 +1,6 @@
 IO_OPTION:
-  INPUT_ROOT: '/media/hiroki/HDD1TB/research/dcase2021_task2/datasets'
-  OUTPUT_ROOT: '/media/hiroki/HDD1TB/research/DCASE_experiments/domain_adaptation/EfficientNet/exp1'
+  INPUT_ROOT: '/media/dataset_disk/datasets'
+  OUTPUT_ROOT: '/media/output_disk/domain_adaptation'
   
 param:
   # feature

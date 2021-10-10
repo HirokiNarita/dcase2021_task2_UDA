@@ -50,13 +50,13 @@ class CenterLossNet(nn.Module):
         
         self.fc_in = FC_block(in_features, mid_features)
         self.fc_blocks = [FC_block(mid_features, mid_features)] * 3
-        self.fc_out = nn.Linear(mid_features, out_features)
-    
-    def forward(self, x):
+        self.cl_out = CenterLoss(num_class=out_features, num_feature=mid_features)
+
+    def forward(self, x, section_label):
         x = self.fc_in(x)
         for i in range(len(self.fc_blocks)):
             x = self.fc_blocks[i](x)
-        x = self.fc_out(x)
+        x = self.cl_out(x, section_label)
         return x
 
 class EfficientNet_b1(nn.Module):
@@ -73,20 +73,21 @@ class EfficientNet_b1(nn.Module):
         self.effnet_loss = nn.CrossEntropyLoss()
 
         # CenterLoss用のネットワーク
-        self.centerloss_net = CenterLossNet(5000, n_out)
+        self.centerloss_net = CenterLossNet(1792, n_out)
     
-    def mixup(self, data, label, alpha=1, debug=False, weights=0.6):
-        data = data.to('cpu').detach().numpy().copy()
+    def mixup(self, data, label, alpha=1, debug=False, weights=0.6, n_classes=6, device='cuda:0'):
+        label_mat = torch.zeros((n_classes, n_classes)).to(device)     # 2d matrix
         batch_size = len(data)
-        #weights = np.random.beta(alpha, alpha, batch_size)
+        # weights = np.random.beta(alpha, alpha, batch_size)
         index = np.random.permutation(batch_size)
         x1, x2 = data, data[index]
-        y1, y2 = label, label[index]
+        y1, y2 = int(label.item()), int(label[index].item())
         x = torch.Tensor([x1[i] * weights + x2[i] * (1 - weights) for i in range(batch_size)])
-        y = torch.Tensor([y1[i] * weights[i] + y2[i] * (1 - weights[i]) for i in range(len(weights))])
+        y = torch.Tensor([label_mat[y1[i], y2[i]] for i in range(batch_size)])      # onehot 2d matrix
+        label = torch.flatten(y, start_dim=1, end_dim=-1).argmax(dim=1)     # onehot 2d matrix (batch, 6, 6) => onehot vector (batch, 36) => index vector (batch, 1)
         if debug:
             print('Mixup weights', weights)
-        return x, label #torch.from_numpy(x).clone().cuda()
+        return x.to(device), label
                
     def effnet_forward(self, x):
         x = self.effnet.forward_features(x)
@@ -104,8 +105,8 @@ class EfficientNet_b1(nn.Module):
         #     x = self.spec_augmenter(x)
         x = self.effnet(x)
         loss = self.effnet_loss(x, section_label)
-        return loss
+        return loss, section_label
     
-    def forward_centerloss(self, x):
-        x = self.centerloss_net(x)
+    def forward_centerloss(self, x, section_label):
+        x = self.centerloss_net(x, section_label)
         return x
