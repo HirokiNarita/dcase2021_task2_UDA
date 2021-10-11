@@ -156,8 +156,17 @@ def train_fn(data_loader, model, optimizer, epoch, device):
     return output_dict
 
 def validate_fn(data_loader, model, device, get_anomaly_score=False):
+    tmp_deep_feat = []
+    def hook(module, input, output):
+        #print(output.shape)
+        output = F.adaptive_avg_pool2d(output, 1).squeeze()
+        tmp_deep_feat.append(output)
+    # # M7:block[5], M8:block[6], M9:act2
+    model.effnet.blocks[5].register_forward_hook(hook)
+    model.effnet.blocks[6].register_forward_hook(hook)
+    model.effnet.act2.register_forward_hook(hook)
+
     model.eval()
-    aug = Augment()
     # init
     output_dict = {
         'loss': 0,
@@ -172,23 +181,27 @@ def validate_fn(data_loader, model, device, get_anomaly_score=False):
     # training roop
     for iter, sample in enumerate(tqdm(data_loader)):
         # expand
-        feature = sample['feature']
-        feature = aug(feature)
-        feature = feature.to(device)
-        
-        section_label = sample['section_label'].to(device)
+        feature = sample['feature'].squeeze(0).to(device)
+        size = feature.shape[0]
+        section_label = torch.full(
+            size=(size,),
+            fill_value=sample['section_label'].item(),
+            ).to(device)
+        #print(section_label.shape)
         # propagation
         with torch.no_grad():
-            classifier_loss = model.forward_classifier(feature, section_label)
-            center_pred = model.forward_centerloss(feature, section_label)
-            loss = classifier_loss + center_pred.mean()
-            
+            # effnet forward
+            classifier_loss, section_label = model.forward_classifier(feature, section_label)
+            # hook
+            feature = torch.cat(tmp_deep_feat, dim=1)
+            # centernet forward
+            pred = model.forward_centerloss(feature, section_label)
+            loss = classifier_loss + pred.mean()
             
             if get_anomaly_score == True:
                 anomaly_scores = pred.clone().to('cpu')
                 output_dict['anomaly_scores'].append(anomaly_scores.to('cpu'))
             pred = pred.mean()  # スペクトログラム一つ分のanomaly score
-            loss = pred.mean()
         # append for output
         output_dict['loss'] = output_dict['loss'] + loss.item()
         output_dict['label'].append(sample['label'][0])

@@ -27,7 +27,7 @@ def random_crop(X):
 
 def make_subseq(X, hop_mode=False):
     # mel_spectrogram is np.ndarray [shape=(n_mels, t)]
-    n_frames = config['param']['n_frames']
+    n_frames = config['param']['n_crop_frames']
     #n_hop_frames = config['param']['n_hop_frames']
     total_frames = X.shape[1] - n_frames + 1
     subseq = []
@@ -35,7 +35,7 @@ def make_subseq(X, hop_mode=False):
     for frame_idx in range(total_frames):
         subseq.append(X[:, frame_idx:frame_idx+n_frames])
     
-    subseq = np.stack(subseq, axis=0)
+    subseq = torch.stack(subseq, dim=0)
     # reduce sample
     return subseq
 
@@ -83,8 +83,6 @@ class extract_melspectrogram(object):
         else:
             X = random_crop(X)   # [n_mels, t]
             X = torch.stack([X,X,X], dim=0) # [ch, n_mels, t]
-        # if self.mode == 'training':
-        #     X = self.spec_augmenter(X)
         
         ############################
         self.sound_data = X

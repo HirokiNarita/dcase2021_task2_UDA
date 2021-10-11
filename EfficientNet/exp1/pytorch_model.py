@@ -22,11 +22,8 @@ class CenterLoss(nn.Module):
             labels = torch.zeros(x.shape[0]).long().cuda()
         
         center = self.centers[labels]
-        print('debug')
-        print(center.shape)
         dist = (x-center).pow(2)
         loss = torch.clamp(dist, min=1e-12, max=1e+12).mean(dim=-1)
-
         return loss
 
 class FC_block(nn.Module):
@@ -42,7 +39,6 @@ class FC_block(nn.Module):
     def forward(self, input, ):
         x = input
         x = self.silu(self.bn1(self.fc1(x)))
-        print(x)
         return x
 
 class CenterLossNet(nn.Module):
@@ -62,7 +58,6 @@ class CenterLossNet(nn.Module):
         for i in range(len(self.fc_blocks)):
             x = self.fc_blocks[i](x)
         x = self.cl_out(x, section_label)
-        print(x)
         return x
 
 class EfficientNet_b1(nn.Module):
@@ -83,9 +78,9 @@ class EfficientNet_b1(nn.Module):
     
     def mixup(self, data, label, alpha=1, debug=False, weights=0.6, n_classes=6, device='cuda:0'):
         #data = data.to('cpu').detach().numpy().copy()
-        label = label.to('cpu').detach().numpy().copy()
+        #label = label.to('cpu').detach().numpy().copy()
         batch_size = len(data)
-        label_mat = torch.zeros((batch_size, n_classes, n_classes))     # (N, C_n, C_n)
+        label_mat = torch.zeros((batch_size, n_classes, n_classes)).to(device)    # (N, C_n, C_n)
         index = np.random.permutation(batch_size)
         x1, x2 = data, data[index]
         y1, y2 = label, label[index]
@@ -101,7 +96,7 @@ class EfficientNet_b1(nn.Module):
         # (classes: 0~35)    
         label = torch.flatten(label_mat, start_dim=1, end_dim=-1).argmax(dim=1)
         
-        return x, label.to(device)
+        return x, label
 
     def effnet_forward(self, x):
         x = self.effnet.forward_features(x)
@@ -114,9 +109,15 @@ class EfficientNet_b1(nn.Module):
         x = x.transpose(1, 2)
         x = self.bn0(x)
         x = x.transpose(1, 2)
-        x, section_label = self.mixup(x, section_label)
-        # if self.training:
-        #     x = self.spec_augmenter(x)
+        if self.training == True:
+            x, section_label = self.mixup(x, section_label)
+        else:
+            batch_size, n_classes = x.shape[0], 6
+            label_mat = torch.zeros((batch_size, n_classes, n_classes)).cuda()
+            for i in range(batch_size):
+                label_mat[i, section_label[i], section_label[i]] = 1  # onehot 
+            # (classes: 0~35)
+            section_label = torch.flatten(label_mat, start_dim=1, end_dim=-1).argmax(dim=1)
         x = self.effnet(x)
         loss = self.effnet_loss(x, section_label)
         return loss, section_label
