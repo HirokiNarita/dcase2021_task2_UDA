@@ -11,7 +11,7 @@ from torchaudio.transforms import Resample
 import matplotlib.pyplot as plt
 
 class CenterLoss(nn.Module):
-    def __init__(self, num_class=10, num_feature=2):
+    def __init__(self, num_class=10, num_feature=2, center_label=[0, 7, 14, 21, 28, 35]):
         super(CenterLoss, self).__init__()
         self.num_class = num_class
         self.num_feature = num_feature
@@ -20,7 +20,10 @@ class CenterLoss(nn.Module):
     def forward(self, x, labels=None):
         if labels == None:
             labels = torch.zeros(x.shape[0]).long().cuda()
+        
         center = self.centers[labels]
+        print('debug')
+        print(center.shape)
         dist = (x-center).pow(2)
         loss = torch.clamp(dist, min=1e-12, max=1e+12).mean(dim=-1)
 
@@ -39,17 +42,19 @@ class FC_block(nn.Module):
     def forward(self, input, ):
         x = input
         x = self.silu(self.bn1(self.fc1(x)))
+        print(x)
         return x
 
 class CenterLossNet(nn.Module):
-    def __init__(self, in_features, out_features, mid_features=None):
+    def __init__(self, in_features, out_features=6, mid_features=None):
         
-        super(FC_block, self).__init__()
+        super(CenterLossNet, self).__init__()
         if mid_features == None:
             mid_features = int(in_features / 2)        
-        
+        self.n_layers = 3
         self.fc_in = FC_block(in_features, mid_features)
-        self.fc_blocks = [FC_block(mid_features, mid_features)] * 3
+        self.fc_blocks = nn.Sequential(
+            *([FC_block(mid_features, mid_features)] * self.n_layers))
         self.cl_out = CenterLoss(num_class=out_features, num_feature=mid_features)
 
     def forward(self, x, section_label):
@@ -57,6 +62,7 @@ class CenterLossNet(nn.Module):
         for i in range(len(self.fc_blocks)):
             x = self.fc_blocks[i](x)
         x = self.cl_out(x, section_label)
+        print(x)
         return x
 
 class EfficientNet_b1(nn.Module):
@@ -76,19 +82,27 @@ class EfficientNet_b1(nn.Module):
         self.centerloss_net = CenterLossNet(1792, n_out)
     
     def mixup(self, data, label, alpha=1, debug=False, weights=0.6, n_classes=6, device='cuda:0'):
-        label_mat = torch.zeros((n_classes, n_classes)).to(device)     # 2d matrix
+        #data = data.to('cpu').detach().numpy().copy()
+        label = label.to('cpu').detach().numpy().copy()
         batch_size = len(data)
-        # weights = np.random.beta(alpha, alpha, batch_size)
+        label_mat = torch.zeros((batch_size, n_classes, n_classes))     # (N, C_n, C_n)
         index = np.random.permutation(batch_size)
         x1, x2 = data, data[index]
-        y1, y2 = int(label.item()), int(label[index].item())
-        x = torch.Tensor([x1[i] * weights + x2[i] * (1 - weights) for i in range(batch_size)])
-        y = torch.Tensor([label_mat[y1[i], y2[i]] for i in range(batch_size)])      # onehot 2d matrix
-        label = torch.flatten(y, start_dim=1, end_dim=-1).argmax(dim=1)     # onehot 2d matrix (batch, 6, 6) => onehot vector (batch, 36) => index vector (batch, 1)
-        if debug:
-            print('Mixup weights', weights)
-        return x.to(device), label
-               
+        y1, y2 = label, label[index]
+        x = torch.cat([
+            torch.unsqueeze(
+                x1[i,:,:,:]*weights + x2[i,:,:,:]*(1 - weights),
+                0) \
+                for i in range(batch_size)],
+                dim=0)
+        # onehot 2d matrix (batch, 6, 6) => onehot vector (batch, 36) => index vector (batch, 1)
+        for i in range(batch_size):
+            label_mat[i, y1[i], y2[i]] = 1  # onehot
+        # (classes: 0~35)    
+        label = torch.flatten(label_mat, start_dim=1, end_dim=-1).argmax(dim=1)
+        
+        return x, label.to(device)
+
     def effnet_forward(self, x):
         x = self.effnet.forward_features(x)
         x = self.effnet.global_pool(x)
@@ -97,9 +111,9 @@ class EfficientNet_b1(nn.Module):
         return x
        
     def forward_classifier(self, x, section_label):
-        x = x.transpose(1, 3)
+        x = x.transpose(1, 2)
         x = self.bn0(x)
-        x = x.transpose(1, 3)
+        x = x.transpose(1, 2)
         x, section_label = self.mixup(x, section_label)
         # if self.training:
         #     x = self.spec_augmenter(x)

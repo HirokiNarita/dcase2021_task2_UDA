@@ -8,7 +8,6 @@ import random
 import datetime
 import math
 
-
 # general analysis tool-kit
 import numpy as np
 import matplotlib.pyplot as plt
@@ -96,6 +95,16 @@ def make_dataloader(train_paths, machine_type):
 # training
 #############################################################################
 def train_fn(data_loader, model, optimizer, epoch, device):
+    tmp_deep_feat = []
+    def hook(module, input, output):
+        #print(output.shape)
+        output = F.adaptive_avg_pool2d(output, 1).squeeze()
+        tmp_deep_feat.append(output)
+    # # M7:block[5], M8:block[6], M9:act2
+    model.effnet.blocks[5].register_forward_hook(hook)
+    model.effnet.blocks[6].register_forward_hook(hook)
+    model.effnet.act2.register_forward_hook(hook)
+
     model.train()
     #aug = Augment()
     # init
@@ -114,15 +123,20 @@ def train_fn(data_loader, model, optimizer, epoch, device):
         feature = sample['feature']
         feature = feature.to(device)
         section_label = sample['section_label'].to(device)
-        # propagation
-        classifier_loss = model.forward_classifier(feature, section_label)
+        # effnet forward
+        classifier_loss, section_label = model.forward_classifier(feature, section_label)
+        # hook
+        feature = torch.cat(tmp_deep_feat, dim=1)
+        # centernet forward
         center_pred = model.forward_centerloss(feature, section_label)
         loss = classifier_loss + center_pred.mean()
         #pred = F.softmax(pred, dim=1)
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-        
+
+        tmp_deep_feat = []
+
         # append for output
         output_dict['loss'] = output_dict['loss'] + loss.item()
         #output_dict['feature'].append(embedding_feat.to('cpu'))

@@ -1,6 +1,6 @@
 IO_OPTION:
-  INPUT_ROOT: '/media/dataset_disk/datasets'
-  OUTPUT_ROOT: '/media/output_disk/domain_adaptation'
+  INPUT_ROOT: '/media/dataset-disk/datasets'
+  OUTPUT_ROOT: '/media/output-disk/domain_adaptation/EfficientNet/exp1'
   
 param:
   # feature
@@ -15,7 +15,7 @@ param:
   n_hop_frames: 0
   # dataloader
   lr : 0.001
-  batch_size : 512
+  batch_size : 128
   shuffle : True
   num_epochs : 50
   # etc
