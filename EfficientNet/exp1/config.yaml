@@ -15,9 +15,9 @@ param:
   n_hop_frames: 0
   # dataloader
   lr : 0.001
-  batch_size : 512
+  batch_size : 256
   shuffle : True
-  num_epochs : 50
+  num_epochs : 100
   # etc
   devise : 'cuda'
   max_fpr : 0.1

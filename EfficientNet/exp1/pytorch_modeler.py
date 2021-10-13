@@ -7,6 +7,7 @@ import os
 import random
 import datetime
 import math
+import gc
 
 # general analysis tool-kit
 import numpy as np
@@ -128,8 +129,8 @@ def train_fn(data_loader, model, optimizer, epoch, device):
         # hook
         feature = torch.cat(tmp_deep_feat, dim=1)
         # centernet forward
-        center_pred = model.forward_centerloss(feature, section_label)
-        loss = classifier_loss + center_pred.mean()
+        cl_loss, _ = model.forward_centerloss(feature, section_label)
+        loss = classifier_loss.to('cpu') + cl_loss.to('cpu')
         #pred = F.softmax(pred, dim=1)
         optimizer.zero_grad()
         loss.backward()
@@ -159,8 +160,9 @@ def validate_fn(data_loader, model, device, get_anomaly_score=False):
     tmp_deep_feat = []
     def hook(module, input, output):
         #print(output.shape)
-        output = F.adaptive_avg_pool2d(output, 1).squeeze()
-        tmp_deep_feat.append(output)
+        with torch.no_grad():
+            output = F.adaptive_avg_pool2d(output, 1).squeeze()
+            tmp_deep_feat.append(output)
     # # M7:block[5], M8:block[6], M9:act2
     model.effnet.blocks[5].register_forward_hook(hook)
     model.effnet.blocks[6].register_forward_hook(hook)
@@ -195,13 +197,13 @@ def validate_fn(data_loader, model, device, get_anomaly_score=False):
             # hook
             feature = torch.cat(tmp_deep_feat, dim=1)
             # centernet forward
-            pred = model.forward_centerloss(feature, section_label)
-            loss = classifier_loss + pred.mean()
-            
+            cl_loss, pred = model.forward_centerloss(feature, section_label)
+            loss = classifier_loss.to('cpu') + cl_loss.to('cpu')
             if get_anomaly_score == True:
                 anomaly_scores = pred.clone().to('cpu')
                 output_dict['anomaly_scores'].append(anomaly_scores.to('cpu'))
             pred = pred.mean()  # スペクトログラム一つ分のanomaly score
+            tmp_deep_feat = []
         # append for output
         output_dict['loss'] = output_dict['loss'] + loss.item()
         output_dict['label'].append(sample['label'][0])
@@ -218,7 +220,15 @@ def validate_fn(data_loader, model, device, get_anomaly_score=False):
     output_dict['pred'] = torch.stack(output_dict['pred']).detach().numpy().copy()
 
     return output_dict
- 
+
+def mem_chk():
+    for obj in gc.get_objects():
+        try:
+            if torch.is_tensor(obj) or (hasattr(obj, 'data') and torch.is_tensor(obj.data)):
+                print(type(obj), obj.size())
+        except:
+            pass
+
 # ref : https://www.kaggle.com/yasufuminakama/moa-pytorch-nn-starter
 import pandas as pd
 import scipy
@@ -252,16 +262,17 @@ def run_training(model, dataloaders_dict, writer, optimizer):
                 get_anomaly_score=True,
                 )
         else:
-            output_src = validate_fn(
-                data_loader=dataloaders_dict['valid_source'],
-                model=model,
-                device=device,
-                )
-            output_tgt = validate_fn(
-                data_loader=dataloaders_dict['valid_target'],
-                model=model,
-                device=device,
-                )
+            if epoch % 10 == 0:
+                output_src = validate_fn(
+                    data_loader=dataloaders_dict['valid_source'],
+                    model=model,
+                    device=device,
+                    )
+                output_tgt = validate_fn(
+                    data_loader=dataloaders_dict['valid_target'],
+                    model=model,
+                    device=device,
+                    )
         # tr
         tr_loss, src_loss, tgt_loss = output_tr['loss'], output_src['loss'], output_tgt['loss']
         tr_feat, tr_sec = output_tr['feature'], output_tr['section_label']
@@ -304,6 +315,7 @@ def run_training(model, dataloaders_dict, writer, optimizer):
         logger.info(epoch_log)
         # show score_df
         display(score_df)
+        #mem_chk()
         
     output_dict = {'train':output_tr, 'val_src':output_src, 'val_tgt':output_tgt}
     return output_dict, model, pred_df
