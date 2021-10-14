@@ -33,7 +33,9 @@ from collections import defaultdict
 
 # original library
 import common as com
-import preprocessing_crop as prep
+import preprocessing_crop as prep_train
+import preprocessing as prep_eval
+
 from augment import Augment
 
 ############################################################################
@@ -60,15 +62,14 @@ def set_seed(seed: int = 42):
 ############################################################################
 def make_dataloader(train_paths, machine_type):   
     transform_tr = transforms.Compose([
-        prep.extract_melspectrogram(eval=False)
+        prep_train.extract_melspectrogram(eval=False)
     ])
-    transform_eval = transforms.Compose([
-        prep.extract_melspectrogram(eval=True)
-    ])
-    train_dataset = prep.DCASE_task2_Dataset(train_paths[machine_type]['train'], transform=transform_tr)
-    valid_source_dataset = prep.DCASE_task2_Dataset(train_paths[machine_type]['valid_source'], transform=transform_eval)
-    valid_target_dataset = prep.DCASE_task2_Dataset(train_paths[machine_type]['valid_target'], transform=transform_eval)
-
+    # transform_eval = transforms.Compose([
+    #     prep.extract_melspectrogram(eval=True)
+    # ])
+    train_dataset = prep_train.DCASE_task2_Dataset(train_paths[machine_type]['train'], transform=transform_tr)
+    valid_source_dataset = prep_eval.DCASE_task2_Dataset(train_paths[machine_type]['valid_source'])
+    valid_target_dataset = prep_eval.DCASE_task2_Dataset(train_paths[machine_type]['valid_target'])
 
     train_loader = torch.utils.data.DataLoader(
         dataset=train_dataset,
@@ -78,19 +79,60 @@ def make_dataloader(train_paths, machine_type):
     
     valid_source_loader = torch.utils.data.DataLoader(
         dataset=valid_source_dataset,
-        batch_size=1,  # 1バッチにつき一つのスペクトログラム
+        batch_size=valid_source_dataset.get_per_sample_size(),  # 1バッチにつき一つのスペクトログラム
         shuffle=False,
         )
     
     valid_target_loader = torch.utils.data.DataLoader(
         dataset=valid_target_dataset,
-        batch_size=1,
+        batch_size=valid_source_dataset.get_per_sample_size(),
         shuffle=False,
         )
 
     dataloaders_dict = {"train": train_loader, "valid_source": valid_source_loader, "valid_target": valid_target_loader}
     
     return dataloaders_dict
+
+def mixup(data, label, alpha=1, debug=False, weights=0.6, n_classes=6, device='cuda:0'):
+    #data = data.to('cpu').detach().numpy().copy()
+    #label = label.to('cpu').detach().numpy().copy()
+    batch_size = len(data)
+    label_mat = torch.zeros((batch_size, n_classes, n_classes))    # (N, C_n, C_n)
+    index = np.random.permutation(batch_size)
+    x1, x2 = data, data[index]
+    y1, y2 = label, label[index]
+    x = torch.cat([
+        torch.unsqueeze(
+            x1[i,:,:,:]*weights + x2[i,:,:,:]*(1 - weights),
+            0) \
+            for i in range(batch_size)],
+            dim=0)
+    # onehot 2d matrix (batch, 6, 6) => onehot vector (batch, 36) => index vector (batch, 1)
+    for i in range(batch_size):
+        label_mat[i, y1[i], y2[i]] = 1  # onehot
+    # (classes: 0~35)
+    label = torch.flatten(label_mat, start_dim=1, end_dim=-1).argmax(dim=1)
+    
+    return x, label
+
+def label_transform(label):
+    batch_size, n_classes = label.shape[0], 6
+    label_mat = torch.zeros((batch_size, n_classes, n_classes)).cuda()
+    for i in range(batch_size):
+        label_mat[i, label[i], label[i]] = 1  # onehot 
+    # (classes: 0~35)
+    label = torch.flatten(label_mat, start_dim=1, end_dim=-1).argmax(dim=1)
+    return label
+
+def replace_label(self, labels, outlier_num=99):
+    # 7の倍数を置き換え（もっと適切な方法があるはず）
+    # 他の値を99で置き換え
+    #labels = labels.to('cpu').detach().clone()
+    labels = torch.where((labels % 7) == 0 , labels, outlier_num)
+    for i in range(len(self.center_label)):
+        labels[labels == self.center_label[i]] = i
+
+    return labels
 
 #############################################################################
 # training
@@ -99,7 +141,7 @@ def train_fn(data_loader, model, optimizer, epoch, device):
     tmp_deep_feat = []
     def hook(module, input, output):
         #print(output.shape)
-        output = F.adaptive_avg_pool2d(output, 1).squeeze()
+        output = F.adaptive_avg_pool2d(output, 1).squeeze().clone()
         tmp_deep_feat.append(output)
     # # M7:block[5], M8:block[6], M9:act2
     model.effnet.blocks[5].register_forward_hook(hook)
@@ -118,12 +160,16 @@ def train_fn(data_loader, model, optimizer, epoch, device):
         'wav_name': [],
         'pred': [],
         }
+
     # training roop
-    for iter, sample in enumerate(tqdm(data_loader)):
+    for iter, sample in tqdm(enumerate(data_loader), total=len(data_loader)):
         # expand
         feature = sample['feature']
+        section_label = sample['section_label']
+        feature, section_label = mixup(feature, section_label)
+
+        section_label = section_label.to(device)
         feature = feature.to(device)
-        section_label = sample['section_label'].to(device)
         # effnet forward
         classifier_loss, section_label = model.forward_classifier(feature, section_label)
         # hook
@@ -153,7 +199,7 @@ def train_fn(data_loader, model, optimizer, epoch, device):
     #output_dict['section_label'] = torch.cat(output_dict['section_label'], dim=0).detach().numpy().copy()
     #output_dict['domain_label'] = torch.cat(output_dict['domain_label'], dim=0).detach().numpy().copy()
     #output_dict['pred'] = torch.cat(output_dict['pred'], dim=0).detach().numpy().copy()
-    
+
     return output_dict
 
 def validate_fn(data_loader, model, device, get_anomaly_score=False):
@@ -161,7 +207,7 @@ def validate_fn(data_loader, model, device, get_anomaly_score=False):
     def hook(module, input, output):
         #print(output.shape)
         with torch.no_grad():
-            output = F.adaptive_avg_pool2d(output, 1).squeeze()
+            output = F.adaptive_avg_pool2d(output, 1).squeeze().clone()
             tmp_deep_feat.append(output)
     # # M7:block[5], M8:block[6], M9:act2
     model.effnet.blocks[5].register_forward_hook(hook)
@@ -181,15 +227,13 @@ def validate_fn(data_loader, model, device, get_anomaly_score=False):
         'anomaly_scores': [],
         }
     # training roop
-    for iter, sample in enumerate(tqdm(data_loader)):
+    for iter, sample in tqdm(enumerate(data_loader), total=len(data_loader)):
         # expand
-        feature = sample['feature'].squeeze(0).to(device)
-        size = feature.shape[0]
-        section_label = torch.full(
-            size=(size,),
-            fill_value=sample['section_label'].item(),
-            ).to(device)
-        #print(section_label.shape)
+        feature = sample['feature'].to(device)
+        feature = torch.stack([feature, feature, feature], dim=1)
+        section_label = sample['section_label']
+        section_label = label_transform(section_label)
+        section_label = section_label.to(device)
         # propagation
         with torch.no_grad():
             # effnet forward
@@ -198,11 +242,12 @@ def validate_fn(data_loader, model, device, get_anomaly_score=False):
             feature = torch.cat(tmp_deep_feat, dim=1)
             # centernet forward
             cl_loss, pred = model.forward_centerloss(feature, section_label)
-            loss = classifier_loss.to('cpu') + cl_loss.to('cpu')
+            loss = classifier_loss.cpu() + cl_loss.cpu()
             if get_anomaly_score == True:
-                anomaly_scores = pred.clone().to('cpu')
-                output_dict['anomaly_scores'].append(anomaly_scores.to('cpu'))
+                anomaly_scores = pred
+                output_dict['anomaly_scores'].append(anomaly_scores)
             pred = pred.mean()  # スペクトログラム一つ分のanomaly score
+            pred = pred.data
             tmp_deep_feat = []
         # append for output
         output_dict['loss'] = output_dict['loss'] + loss.item()
@@ -210,30 +255,22 @@ def validate_fn(data_loader, model, device, get_anomaly_score=False):
         output_dict['section_label'].append(sample['section_label'][0])
         output_dict['domain_label'].append(sample['domain_label'][0])
         output_dict['wav_name'].append(sample['wav_name'][0])
-        output_dict['pred'].append(pred.to('cpu'))
+        output_dict['pred'].append(pred)
     
     # concat for output
     output_dict['loss'] = output_dict['loss'] / len(data_loader)
     output_dict['label'] = torch.stack(output_dict['label']).detach().numpy().copy()
     output_dict['section_label'] = torch.stack(output_dict['section_label']).detach().numpy().copy()
     output_dict['domain_label'] = torch.stack(output_dict['domain_label']).detach().numpy().copy()
-    output_dict['pred'] = torch.stack(output_dict['pred']).detach().numpy().copy()
-
+    output_dict['pred'] = torch.stack(output_dict['pred']).to('cpu').detach().numpy().copy()
     return output_dict
-
-def mem_chk():
-    for obj in gc.get_objects():
-        try:
-            if torch.is_tensor(obj) or (hasattr(obj, 'data') and torch.is_tensor(obj.data)):
-                print(type(obj), obj.size())
-        except:
-            pass
 
 # ref : https://www.kaggle.com/yasufuminakama/moa-pytorch-nn-starter
 import pandas as pd
 import scipy
 from IPython.display import display
 import dcase_util
+
 def run_training(model, dataloaders_dict, writer, optimizer):
     device = torch.device("cuda:0" if torch.cuda.is_available() else 'cpu')
     print("use:", device)
@@ -262,7 +299,7 @@ def run_training(model, dataloaders_dict, writer, optimizer):
                 get_anomaly_score=True,
                 )
         else:
-            if epoch % 10 == 0:
+            if epoch % 1 == 0:
                 output_src = validate_fn(
                     data_loader=dataloaders_dict['valid_source'],
                     model=model,
@@ -315,7 +352,6 @@ def run_training(model, dataloaders_dict, writer, optimizer):
         logger.info(epoch_log)
         # show score_df
         display(score_df)
-        #mem_chk()
         
     output_dict = {'train':output_tr, 'val_src':output_src, 'val_tgt':output_tgt}
     return output_dict, model, pred_df

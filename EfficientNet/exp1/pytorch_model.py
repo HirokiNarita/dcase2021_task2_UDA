@@ -30,21 +30,20 @@ class CenterLoss(nn.Module):
         return labels
 
     def forward(self, x, labels=None):
-        if labels == None:
-            labels = torch.zeros(x.shape[0]).long().cuda()
         # labels <= 6
         # replace label [0,7,14,21,28,35]:[0,1,2,3,4,5]
         # , outlier=(6)
-        labels = self.replace_label(labels)
+        labels = self.replace_label(labels).to('cpu').detach().clone()
+        #print('labels', labels)
         # inlier用のcenter行列作成
-        inlier_idx = (labels < 7).nonzero()
+        inlier_idx = (labels < 7).nonzero().to('cpu')
         inlier_x, inlier_label = x[inlier_idx], labels[inlier_idx]
         inlier_center = self.centers[inlier_label]
         inlier_dist = (inlier_x-inlier_center).pow(2)
         # outlier用のcenter行列作成
         # 全centerから遠く
         if self.training == True:
-            outlier_idx = (labels == 99).nonzero()
+            outlier_idx = (labels == 99).nonzero().to('cpu')
             outlier_x, outlier_label = x[outlier_idx], labels[outlier_idx]
             outlier_x = x[outlier_idx]
             # 怪しい
@@ -104,30 +103,9 @@ class EfficientNet_b1(nn.Module):
 
         # CenterLoss用のネットワーク
         self.centerloss_net = CenterLossNet(1792, n_centers)
-    
-    def mixup(self, data, label, alpha=1, debug=False, weights=0.6, n_classes=6, device='cuda:0'):
-        #data = data.to('cpu').detach().numpy().copy()
-        #label = label.to('cpu').detach().numpy().copy()
-        batch_size = len(data)
-        label_mat = torch.zeros((batch_size, n_classes, n_classes)).to(device)    # (N, C_n, C_n)
-        index = np.random.permutation(batch_size)
-        x1, x2 = data, data[index]
-        y1, y2 = label, label[index]
-        x = torch.cat([
-            torch.unsqueeze(
-                x1[i,:,:,:]*weights + x2[i,:,:,:]*(1 - weights),
-                0) \
-                for i in range(batch_size)],
-                dim=0)
-        # onehot 2d matrix (batch, 6, 6) => onehot vector (batch, 36) => index vector (batch, 1)
-        for i in range(batch_size):
-            label_mat[i, y1[i], y2[i]] = 1  # onehot
-        # (classes: 0~35)    
-        label = torch.flatten(label_mat, start_dim=1, end_dim=-1).argmax(dim=1)
-        
-        return x, label
 
     def effnet_forward(self, x):
+        torch.cuda.empty_cache()
         x = self.effnet.forward_features(x)
         x = self.effnet.global_pool(x)
         if self.effnet.drop_rate > 0.:
@@ -135,18 +113,6 @@ class EfficientNet_b1(nn.Module):
         return x
        
     def forward_classifier(self, x, section_label):
-        x = x.transpose(1, 2)
-        x = self.bn0(x)
-        x = x.transpose(1, 2)
-        if self.training == True:
-            x, section_label = self.mixup(x, section_label)
-        else:
-            batch_size, n_classes = x.shape[0], 6
-            label_mat = torch.zeros((batch_size, n_classes, n_classes)).cuda()
-            for i in range(batch_size):
-                label_mat[i, section_label[i], section_label[i]] = 1  # onehot 
-            # (classes: 0~35)
-            section_label = torch.flatten(label_mat, start_dim=1, end_dim=-1).argmax(dim=1)
         x = self.effnet(x)
         loss = self.effnet_loss(x, section_label)
         return loss, section_label
