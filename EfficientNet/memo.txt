@@ -1,0 +1,29 @@
+exp1 : lr=1e-3, loss = MSE(c_i - X_normal) + MSE(c_i - X_outlier) + CrossEntropy(), numepoch=300
+exp2 : lr=1e-5, Deep-SAD Loss, numepoch=100
+exp3 : lr=1e-5, loss = MSE(c_i - X_normal) + MSE(c_i - X_outlier) + CrossEntropy(), numepoch=100, k=0.01
+exp4 : lr=1e-5, Adacos, numepoch=100, k=0.01
+exp5 : lr=1e-5, Adacos+10%tgt, numepoch=100, k=0.01
+exp6 : lr=1e-5, numepoch=100, center-loss項のみ, 効果なし
+exp7 : Binary_Classifierでpredしようとしたもの．未実装．
+exp8 : centerの数を一つにしたもの．効果なし．
+exp9 : exp5から派生.tgt10%. contrastive learning風にcenter lossを設計したもの．
+exp10 : exp5から派生.tgt10%. loss=inlier_loss/outlier_loss
+exp11 : exp5から派生.tgt10%. mixupを最終層で行ったもの．
+exp12 : exp5から派生.tgt10%. loss=inlier_loss/outlier_lossのみ
+exp13 : mixupなし
+exp14 : spec aug
+exp15 : Linear
+exp17 : 部分時系列にしないで作成
+exp18 : lr=1e-6
+exp19 : center lossにlinear．lr=1e-4
+exp20 : 出力層でbatch norm  効果なし
+exp21 : centerloss前に一層swish,Linear よい
+exp22 : 19から派生．異常スコアにmaxを追加．微妙
+exp23 : 19から派生．最終層でmixupしてoutlier項に追加．
+exp24 : 19から派生．sectionlabelを挿入．下がる．
+exp25 : inlier_dist.clamp(min=1e-12, max=1e+12).sum(dim=1)に修正
+exp26 : cosine類似度で計算．　下がる．
+exp28 : weight decay=1e-5 効果なし
+exp30 : exp25から派生．特定周波数帯にランダムで他のデータの同じ周波数帯を挿入
+exp32 : vae
+exp34 : cvae

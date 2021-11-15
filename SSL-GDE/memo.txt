@@ -1,0 +1,13 @@
+exp1 :  focal loss + GDE
+exp2 : center loss + GDE
+exp3 : simCLR(self.time_dropper(self.freq_dropper(self.spec_cutmix(self.mixup(x))))) + GDE
+exp4 : simCLR(self.time_dropper(self.freq_dropper(self.spec_cutmix(x)))) + GDE
+exp5 : arcface + focal loss + GDE
+exp6 : arcface + focal loss + GDE + specaug よい
+exp7 : arcface + focal loss + GDE + specaug + mixup むちゃよい
+exp8 : arcface + focal loss + GDE + mixup # spec augあったほうがよい
+exp9 : Xtgtを同時にいれたもの
+exp10 : lof
+exp13: CE + pred
+exp14: OE
+exp15: 224x224で入力 よい

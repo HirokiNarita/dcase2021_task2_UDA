@@ -17,7 +17,7 @@ param:
   lr : 0.001
   batch_size : 256
   shuffle : True
-  num_epochs : 200
+  num_epochs : 300
   # etc
   devise : 'cuda'
   max_fpr : 0.1

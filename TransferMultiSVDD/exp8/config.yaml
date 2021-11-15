@@ -1,0 +1,26 @@
+IO_OPTION:
+  INPUT_ROOT: '/media/dataset-disk/datasets'
+  OUTPUT_ROOT: '/media/output-disk/domain_adaptation/Transfer_MultiSVDD/exp8'
+  SRC_OUTPUT_ROOT: '/media/output-disk/domain_adaptation/Transfer_MultiSVDD/exp8/source_domain/'
+  TGT_OUTPUT_ROOT: '/media/output-disk/domain_adaptation/Transfer_MultiSVDD/exp8/target_domain/'
+  PREMODEL_ROOT: '/media/output-disk/domain_adaptation/CCL-GDE/exp7/models'
+  
+param:
+  # feature
+  sample_rate: 16000
+  window_size: 1024
+  hop_size: 512
+  mel_bins: 128
+  fmin: 60
+  fmax: 7800
+  # subseq
+  n_crop_frames: 64
+  n_hop_frames: 0
+  # dataloader
+  lr : 0.0001
+  batch_size : 256
+  shuffle : True
+  num_epochs : 300
+  # etc
+  devise : 'cuda'
+  max_fpr : 0.1

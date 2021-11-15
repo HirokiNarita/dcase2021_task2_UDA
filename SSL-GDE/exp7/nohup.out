@@ -1,0 +1,698 @@
+[I 13:55:16.620 NotebookApp] [nb_conda_kernels] enabled, 1 kernels found
+[I 13:55:16.818 NotebookApp] [jupyter_nbextensions_configurator] enabled 0.4.1
+[W 2021-10-15 13:55:18.481 LabApp] Config option `kernel_spec_manager_class` not recognized by `LabApp`.
+[W 2021-10-15 13:55:18.484 LabApp] 'ip' has moved from NotebookApp to ServerApp. This config will be passed to ServerApp. Be sure to update your config before our next release.
+[W 2021-10-15 13:55:18.484 LabApp] 'ip' has moved from NotebookApp to ServerApp. This config will be passed to ServerApp. Be sure to update your config before our next release.
+[W 2021-10-15 13:55:18.484 LabApp] 'ip' has moved from NotebookApp to ServerApp. This config will be passed to ServerApp. Be sure to update your config before our next release.
+[W 2021-10-15 13:55:18.485 LabApp] Config option `kernel_spec_manager_class` not recognized by `LabApp`.
+[I 2021-10-15 13:55:18.492 LabApp] JupyterLab extension loaded from /opt/conda/lib/python3.7/site-packages/jupyterlab
+[I 2021-10-15 13:55:18.492 LabApp] JupyterLab application directory is /opt/conda/share/jupyter/lab
+[I 13:55:18.570 NotebookApp] [Jupytext Server Extension] Deriving a JupytextContentsManager from LargeFileManager
+[I 13:55:18.576 NotebookApp] [nb_conda] enabled
+/opt/conda/lib/python3.7/site-packages/jupyter_server_mathjax/app.py:40: FutureWarning: The alias `_()` will be deprecated. Use `_i18n()` instead.
+  help=_("""The MathJax.js configuration file that is to be used."""),
+[I 13:55:18.629 NotebookApp] Serving notebooks from local directory: /media/code-disk/dcase2021_task2_UDA/EfficientNet/exp1
+[I 13:55:18.629 NotebookApp] Jupyter Notebook 6.4.4 is running at:
+[I 13:55:18.629 NotebookApp] http://hiroki-research-instance:8888/?token=fa364c734bd3ee2b18c0b81d4f4265844e9e4150845f2cba
+[I 13:55:18.629 NotebookApp]  or http://127.0.0.1:8888/?token=fa364c734bd3ee2b18c0b81d4f4265844e9e4150845f2cba
+[I 13:55:18.629 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 13:55:18.633 NotebookApp] 
+    
+    To access the notebook, open this file in a browser:
+        file:///home/hiroki/.local/share/jupyter/runtime/nbserver-23285-open.html
+    Or copy and paste one of these URLs:
+        http://hiroki-research-instance:8888/?token=fa364c734bd3ee2b18c0b81d4f4265844e9e4150845f2cba
+     or http://127.0.0.1:8888/?token=fa364c734bd3ee2b18c0b81d4f4265844e9e4150845f2cba
+[I 13:56:25.561 NotebookApp] 302 GET /?token=fa364c734bd3ee2b18c0b81d4f4265844e9e4150845f2cba (14.11.65.160) 0.800000ms
+/opt/conda/lib/python3.7/json/encoder.py:257: UserWarning: date_default is deprecated since jupyter_client 7.0.0. Use jupyter_client.jsonutil.json_default.
+  return _iterencode(o, 0)
+[W 13:56:31.118 NotebookApp] Config option `template_path` not recognized by `ExporterCollapsibleHeadings`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.126 NotebookApp] Config option `template_path` not recognized by `ExporterCollapsibleHeadings`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.155 NotebookApp] Config option `template_path` not recognized by `TocExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.161 NotebookApp] Config option `template_path` not recognized by `TocExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.174 NotebookApp] Config option `template_path` not recognized by `LenvsHTMLExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.184 NotebookApp] Config option `template_path` not recognized by `LenvsHTMLExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.199 NotebookApp] Config option `template_path` not recognized by `LenvsTocHTMLExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.209 NotebookApp] Config option `template_path` not recognized by `LenvsTocHTMLExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.236 NotebookApp] Config option `template_path` not recognized by `LenvsLatexExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.242 NotebookApp] Config option `template_path` not recognized by `LenvsLatexExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.344 NotebookApp] Config option `template_path` not recognized by `LenvsSlidesExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.351 NotebookApp] Config option `template_path` not recognized by `LenvsSlidesExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.410 NotebookApp] Config option `template_path` not recognized by `ExporterCollapsibleHeadings`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.418 NotebookApp] Config option `template_path` not recognized by `ExporterCollapsibleHeadings`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.447 NotebookApp] Config option `template_path` not recognized by `TocExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.453 NotebookApp] Config option `template_path` not recognized by `TocExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.465 NotebookApp] Config option `template_path` not recognized by `LenvsHTMLExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.475 NotebookApp] Config option `template_path` not recognized by `LenvsHTMLExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.489 NotebookApp] Config option `template_path` not recognized by `LenvsTocHTMLExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.499 NotebookApp] Config option `template_path` not recognized by `LenvsTocHTMLExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.526 NotebookApp] Config option `template_path` not recognized by `LenvsLatexExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.532 NotebookApp] Config option `template_path` not recognized by `LenvsLatexExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.639 NotebookApp] Config option `template_path` not recognized by `LenvsSlidesExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:31.646 NotebookApp] Config option `template_path` not recognized by `LenvsSlidesExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 13:56:34.117 NotebookApp] Notebook 01_training.ipynb is not trusted
+Exception in callback <TaskWakeupMethWrapper object at 0x7fa86336bd50>(<Future finis...mp=1\r\n\r\n'>)
+handle: <Handle <TaskWakeupMethWrapper object at 0x7fa86336bd50>(<Future finis...mp=1\r\n\r\n'>)>
+Traceback (most recent call last):
+  File "/opt/conda/lib/python3.7/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+RuntimeError: Cannot enter into task <Task pending coro=<HTTP1ServerConnection._server_request_loop() running at /opt/conda/lib/python3.7/site-packages/tornado/http1connection.py:823> wait_for=<Future finished result=b'GET /api/co...Tmp=1\r\n\r\n'> cb=[IOLoop.add_future.<locals>.<lambda>() at /opt/conda/lib/python3.7/site-packages/tornado/ioloop.py:688]> while another task <Task pending coro=<KernelManager._async_start_kernel() running at /opt/conda/lib/python3.7/site-packages/jupyter_client/manager.py:336>> is being executed.
+[I 13:56:35.510 NotebookApp] Kernel started: 7e04351c-07bb-4e05-afa6-44070ed3808c, name: python3
+/opt/conda/lib/python3.7/json/encoder.py:257: UserWarning: date_default is deprecated since jupyter_client 7.0.0. Use jupyter_client.jsonutil.json_default.
+  return _iterencode(o, 0)
+[I 13:58:35.698 NotebookApp] Saving file at /01_training.ipynb
+[I 13:58:35.699 NotebookApp] Saving 01_training.ipynb
+[W 13:58:35.701 NotebookApp] Notebook 01_training.ipynb is not trusted
+[I 14:00:35.747 NotebookApp] Saving file at /01_training.ipynb
+[I 14:00:35.747 NotebookApp] Saving 01_training.ipynb
+[W 14:00:35.749 NotebookApp] Notebook 01_training.ipynb is not trusted
+[I 14:00:41.544 NotebookApp] Saving file at /01_training.ipynb
+[I 14:00:41.545 NotebookApp] Saving 01_training.ipynb
+[W 14:00:41.547 NotebookApp] Notebook 01_training.ipynb is not trusted
+[I 14:01:12.031 NotebookApp] Saving file at /01_training.ipynb
+[I 14:01:12.032 NotebookApp] Saving 01_training.ipynb
+[W 14:01:12.033 NotebookApp] Notebook 01_training.ipynb is not trusted
+[I 14:01:12.807 NotebookApp] Saving file at /01_training.ipynb
+[I 14:01:12.808 NotebookApp] Saving 01_training.ipynb
+[W 14:01:12.810 NotebookApp] Notebook 01_training.ipynb is not trusted
+[I 14:02:25.643 NotebookApp] Starting buffering for 7e04351c-07bb-4e05-afa6-44070ed3808c:d7387afd213044c186016544a2a6c1d1
+[I 14:02:25.957 NotebookApp] Kernel restarted: 7e04351c-07bb-4e05-afa6-44070ed3808c
+[I 14:02:26.074 NotebookApp] Restoring connection for 7e04351c-07bb-4e05-afa6-44070ed3808c:d7387afd213044c186016544a2a6c1d1
+[I 14:02:26.642 NotebookApp] Replaying 3 buffered messages
+[I 14:02:35.725 NotebookApp] Saving file at /01_training.ipynb
+[I 14:02:35.725 NotebookApp] Saving 01_training.ipynb
+[W 14:02:35.727 NotebookApp] Notebook 01_training.ipynb is not trusted
+[I 14:04:35.722 NotebookApp] Saving file at /01_training.ipynb
+[I 14:04:35.723 NotebookApp] Saving 01_training.ipynb
+[W 14:04:35.725 NotebookApp] Notebook 01_training.ipynb is not trusted
+[I 14:06:36.394 NotebookApp] Saving file at /01_training.ipynb
+[I 14:06:36.395 NotebookApp] Saving 01_training.ipynb
+[W 14:06:36.396 NotebookApp] Notebook 01_training.ipynb is not trusted
+[I 14:12:36.457 NotebookApp] Saving file at /01_training.ipynb
+[I 14:12:36.457 NotebookApp] Saving 01_training.ipynb
+[W 14:12:36.459 NotebookApp] Notebook 01_training.ipynb is not trusted
+[I 14:36:51.173 NotebookApp] Starting buffering for 7e04351c-07bb-4e05-afa6-44070ed3808c:d7387afd213044c186016544a2a6c1d1
+[I 14:36:51.931 NotebookApp] Kernel restarted: 7e04351c-07bb-4e05-afa6-44070ed3808c
+[I 14:36:52.027 NotebookApp] Restoring connection for 7e04351c-07bb-4e05-afa6-44070ed3808c:d7387afd213044c186016544a2a6c1d1
+[I 14:36:52.539 NotebookApp] Replaying 3 buffered messages
+[I 14:38:35.547 NotebookApp] Saving file at /01_training.ipynb
+[I 14:38:35.548 NotebookApp] Saving 01_training.ipynb
+[I 14:40:18.338 NotebookApp] Starting buffering for 7e04351c-07bb-4e05-afa6-44070ed3808c:d7387afd213044c186016544a2a6c1d1
+[I 14:40:19.655 NotebookApp] Kernel restarted: 7e04351c-07bb-4e05-afa6-44070ed3808c
+[I 14:40:19.748 NotebookApp] Restoring connection for 7e04351c-07bb-4e05-afa6-44070ed3808c:d7387afd213044c186016544a2a6c1d1
+[I 14:40:20.755 NotebookApp] Replaying 3 buffered messages
+[I 14:40:36.208 NotebookApp] Saving file at /01_training.ipynb
+[I 14:40:36.209 NotebookApp] Saving 01_training.ipynb
+[I 14:42:35.533 NotebookApp] Saving file at /01_training.ipynb
+[I 14:42:35.534 NotebookApp] Saving 01_training.ipynb
+[I 14:43:10.990 NotebookApp] Kernel interrupted: 7e04351c-07bb-4e05-afa6-44070ed3808c
+[I 14:44:35.566 NotebookApp] Saving file at /01_training.ipynb
+[I 14:44:35.567 NotebookApp] Saving 01_training.ipynb
+[I 14:45:34.458 NotebookApp] Starting buffering for 7e04351c-07bb-4e05-afa6-44070ed3808c:d7387afd213044c186016544a2a6c1d1
+[I 14:45:35.772 NotebookApp] Kernel restarted: 7e04351c-07bb-4e05-afa6-44070ed3808c
+[I 14:45:35.872 NotebookApp] Restoring connection for 7e04351c-07bb-4e05-afa6-44070ed3808c:d7387afd213044c186016544a2a6c1d1
+[I 14:45:36.429 NotebookApp] Replaying 3 buffered messages
+[I 14:45:39.754 NotebookApp] Kernel interrupted: 7e04351c-07bb-4e05-afa6-44070ed3808c
+[I 14:45:39.937 NotebookApp] Kernel interrupted: 7e04351c-07bb-4e05-afa6-44070ed3808c
+[I 14:46:35.587 NotebookApp] Saving file at /01_training.ipynb
+[I 14:46:35.588 NotebookApp] Saving 01_training.ipynb
+[I 14:47:24.154 NotebookApp] Starting buffering for 7e04351c-07bb-4e05-afa6-44070ed3808c:d7387afd213044c186016544a2a6c1d1
+[I 14:47:25.068 NotebookApp] Kernel restarted: 7e04351c-07bb-4e05-afa6-44070ed3808c
+[I 14:47:25.169 NotebookApp] Restoring connection for 7e04351c-07bb-4e05-afa6-44070ed3808c:d7387afd213044c186016544a2a6c1d1
+[I 14:47:25.675 NotebookApp] Replaying 3 buffered messages
+[I 14:48:35.578 NotebookApp] Saving file at /01_training.ipynb
+[I 14:48:35.579 NotebookApp] Saving 01_training.ipynb
+[I 14:50:35.576 NotebookApp] Saving file at /01_training.ipynb
+[I 14:50:35.577 NotebookApp] Saving 01_training.ipynb
+[I 14:52:36.296 NotebookApp] Saving file at /01_training.ipynb
+[I 14:52:36.296 NotebookApp] Saving 01_training.ipynb
+[I 14:54:35.605 NotebookApp] Saving file at /01_training.ipynb
+[I 14:54:35.606 NotebookApp] Saving 01_training.ipynb
+[I 14:56:35.613 NotebookApp] Saving file at /01_training.ipynb
+[I 14:56:35.613 NotebookApp] Saving 01_training.ipynb
+[I 14:58:35.609 NotebookApp] Saving file at /01_training.ipynb
+[I 14:58:35.610 NotebookApp] Saving 01_training.ipynb
+[I 15:00:35.613 NotebookApp] Saving file at /01_training.ipynb
+[I 15:00:35.614 NotebookApp] Saving 01_training.ipynb
+[I 15:02:35.628 NotebookApp] Saving file at /01_training.ipynb
+[I 15:02:35.630 NotebookApp] Saving 01_training.ipynb
+[I 15:04:35.649 NotebookApp] Saving file at /01_training.ipynb
+[I 15:04:35.649 NotebookApp] Saving 01_training.ipynb
+[I 15:06:36.329 NotebookApp] Saving file at /01_training.ipynb
+[I 15:06:36.330 NotebookApp] Saving 01_training.ipynb
+[I 15:08:35.667 NotebookApp] Saving file at /01_training.ipynb
+[I 15:08:35.667 NotebookApp] Saving 01_training.ipynb
+[I 15:10:36.336 NotebookApp] Saving file at /01_training.ipynb
+[I 15:10:36.337 NotebookApp] Saving 01_training.ipynb
+[I 15:12:20.039 NotebookApp] 302 GET / (54.153.68.20) 0.730000ms
+[I 15:12:35.733 NotebookApp] Saving file at /01_training.ipynb
+[I 15:12:35.734 NotebookApp] Saving 01_training.ipynb
+[I 15:14:35.651 NotebookApp] Saving file at /01_training.ipynb
+[I 15:14:35.652 NotebookApp] Saving 01_training.ipynb
+[I 15:16:35.649 NotebookApp] Saving file at /01_training.ipynb
+[I 15:16:35.650 NotebookApp] Saving 01_training.ipynb
+[I 15:18:35.721 NotebookApp] Saving file at /01_training.ipynb
+[I 15:18:35.721 NotebookApp] Saving 01_training.ipynb
+[I 15:20:35.666 NotebookApp] Saving file at /01_training.ipynb
+[I 15:20:35.667 NotebookApp] Saving 01_training.ipynb
+[I 15:22:35.667 NotebookApp] Saving file at /01_training.ipynb
+[I 15:22:35.668 NotebookApp] Saving 01_training.ipynb
+[I 15:24:35.661 NotebookApp] Saving file at /01_training.ipynb
+[I 15:24:35.662 NotebookApp] Saving 01_training.ipynb
+[I 15:26:35.655 NotebookApp] Saving file at /01_training.ipynb
+[I 15:26:35.656 NotebookApp] Saving 01_training.ipynb
+[I 15:28:35.674 NotebookApp] Saving file at /01_training.ipynb
+[I 15:28:35.675 NotebookApp] Saving 01_training.ipynb
+[I 15:30:35.705 NotebookApp] Saving file at /01_training.ipynb
+[I 15:30:35.707 NotebookApp] Saving 01_training.ipynb
+[I 15:32:35.685 NotebookApp] Saving file at /01_training.ipynb
+[I 15:32:35.686 NotebookApp] Saving 01_training.ipynb
+[I 15:34:35.684 NotebookApp] Saving file at /01_training.ipynb
+[I 15:34:35.685 NotebookApp] Saving 01_training.ipynb
+[I 15:36:35.704 NotebookApp] Saving file at /01_training.ipynb
+[I 15:36:35.705 NotebookApp] Saving 01_training.ipynb
+[I 15:38:35.726 NotebookApp] Saving file at /01_training.ipynb
+[I 15:38:35.727 NotebookApp] Saving 01_training.ipynb
+[I 15:40:35.698 NotebookApp] Saving file at /01_training.ipynb
+[I 15:40:35.699 NotebookApp] Saving 01_training.ipynb
+[I 15:42:35.724 NotebookApp] Saving file at /01_training.ipynb
+[I 15:42:35.725 NotebookApp] Saving 01_training.ipynb
+[I 15:44:35.690 NotebookApp] Saving file at /01_training.ipynb
+[I 15:44:35.691 NotebookApp] Saving 01_training.ipynb
+[I 15:46:35.689 NotebookApp] Saving file at /01_training.ipynb
+[I 15:46:35.690 NotebookApp] Saving 01_training.ipynb
+[I 15:48:35.694 NotebookApp] Saving file at /01_training.ipynb
+[I 15:48:35.695 NotebookApp] Saving 01_training.ipynb
+[I 15:50:35.711 NotebookApp] Saving file at /01_training.ipynb
+[I 15:50:35.712 NotebookApp] Saving 01_training.ipynb
+[I 15:52:35.714 NotebookApp] Saving file at /01_training.ipynb
+[I 15:52:35.715 NotebookApp] Saving 01_training.ipynb
+[I 15:54:35.702 NotebookApp] Saving file at /01_training.ipynb
+[I 15:54:35.703 NotebookApp] Saving 01_training.ipynb
+[I 15:56:35.693 NotebookApp] Saving file at /01_training.ipynb
+[I 15:56:35.694 NotebookApp] Saving 01_training.ipynb
+[I 15:58:35.689 NotebookApp] Saving file at /01_training.ipynb
+[I 15:58:35.690 NotebookApp] Saving 01_training.ipynb
+[I 16:00:35.696 NotebookApp] Saving file at /01_training.ipynb
+[I 16:00:35.696 NotebookApp] Saving 01_training.ipynb
+[I 16:02:35.726 NotebookApp] Saving file at /01_training.ipynb
+[I 16:02:35.727 NotebookApp] Saving 01_training.ipynb
+[I 16:04:35.702 NotebookApp] Saving file at /01_training.ipynb
+[I 16:04:35.703 NotebookApp] Saving 01_training.ipynb
+[I 16:06:35.713 NotebookApp] Saving file at /01_training.ipynb
+[I 16:06:35.714 NotebookApp] Saving 01_training.ipynb
+[I 16:08:35.716 NotebookApp] Saving file at /01_training.ipynb
+[I 16:08:35.717 NotebookApp] Saving 01_training.ipynb
+[I 16:10:35.695 NotebookApp] Saving file at /01_training.ipynb
+[I 16:10:35.696 NotebookApp] Saving 01_training.ipynb
+[I 16:12:35.719 NotebookApp] Saving file at /01_training.ipynb
+[I 16:12:35.720 NotebookApp] Saving 01_training.ipynb
+[I 16:14:35.708 NotebookApp] Saving file at /01_training.ipynb
+[I 16:14:35.709 NotebookApp] Saving 01_training.ipynb
+[I 16:16:35.735 NotebookApp] Saving file at /01_training.ipynb
+[I 16:16:35.737 NotebookApp] Saving 01_training.ipynb
+[I 16:18:35.754 NotebookApp] Saving file at /01_training.ipynb
+[I 16:18:35.755 NotebookApp] Saving 01_training.ipynb
+[I 16:20:35.751 NotebookApp] Saving file at /01_training.ipynb
+[I 16:20:35.751 NotebookApp] Saving 01_training.ipynb
+[I 16:22:35.754 NotebookApp] Saving file at /01_training.ipynb
+[I 16:22:35.755 NotebookApp] Saving 01_training.ipynb
+[I 16:24:35.758 NotebookApp] Saving file at /01_training.ipynb
+[I 16:24:35.759 NotebookApp] Saving 01_training.ipynb
+[I 16:26:35.750 NotebookApp] Saving file at /01_training.ipynb
+[I 16:26:35.751 NotebookApp] Saving 01_training.ipynb
+[I 16:28:35.737 NotebookApp] Saving file at /01_training.ipynb
+[I 16:28:35.738 NotebookApp] Saving 01_training.ipynb
+[I 16:30:35.757 NotebookApp] Saving file at /01_training.ipynb
+[I 16:30:35.758 NotebookApp] Saving 01_training.ipynb
+[I 16:32:35.764 NotebookApp] Saving file at /01_training.ipynb
+[I 16:32:35.765 NotebookApp] Saving 01_training.ipynb
+[I 16:34:35.795 NotebookApp] Saving file at /01_training.ipynb
+[I 16:34:35.796 NotebookApp] Saving 01_training.ipynb
+[I 16:36:35.785 NotebookApp] Saving file at /01_training.ipynb
+[I 16:36:35.786 NotebookApp] Saving 01_training.ipynb
+[I 16:38:35.755 NotebookApp] Saving file at /01_training.ipynb
+[I 16:38:35.756 NotebookApp] Saving 01_training.ipynb
+[I 16:40:35.767 NotebookApp] Saving file at /01_training.ipynb
+[I 16:40:35.768 NotebookApp] Saving 01_training.ipynb
+[I 16:42:35.757 NotebookApp] Saving file at /01_training.ipynb
+[I 16:42:35.758 NotebookApp] Saving 01_training.ipynb
+[I 16:44:35.713 NotebookApp] Saving file at /01_training.ipynb
+[I 16:44:35.714 NotebookApp] Saving 01_training.ipynb
+[I 16:46:35.756 NotebookApp] Saving file at /01_training.ipynb
+[I 16:46:35.757 NotebookApp] Saving 01_training.ipynb
+[I 16:48:35.752 NotebookApp] Saving file at /01_training.ipynb
+[I 16:48:35.752 NotebookApp] Saving 01_training.ipynb
+[I 16:50:35.723 NotebookApp] Saving file at /01_training.ipynb
+[I 16:50:35.724 NotebookApp] Saving 01_training.ipynb
+[I 16:52:35.724 NotebookApp] Saving file at /01_training.ipynb
+[I 16:52:35.725 NotebookApp] Saving 01_training.ipynb
+[I 16:54:35.778 NotebookApp] Saving file at /01_training.ipynb
+[I 16:54:35.779 NotebookApp] Saving 01_training.ipynb
+[I 16:56:35.773 NotebookApp] Saving file at /01_training.ipynb
+[I 16:56:35.774 NotebookApp] Saving 01_training.ipynb
+[I 16:58:35.764 NotebookApp] Saving file at /01_training.ipynb
+[I 16:58:35.765 NotebookApp] Saving 01_training.ipynb
+[I 17:00:35.707 NotebookApp] Saving file at /01_training.ipynb
+[I 17:00:35.708 NotebookApp] Saving 01_training.ipynb
+[I 17:02:35.734 NotebookApp] Saving file at /01_training.ipynb
+[I 17:02:35.735 NotebookApp] Saving 01_training.ipynb
+[I 17:04:35.702 NotebookApp] Saving file at /01_training.ipynb
+[I 17:04:35.703 NotebookApp] Saving 01_training.ipynb
+[I 17:06:35.699 NotebookApp] Saving file at /01_training.ipynb
+[I 17:06:35.700 NotebookApp] Saving 01_training.ipynb
+[I 17:08:35.695 NotebookApp] Saving file at /01_training.ipynb
+[I 17:08:35.696 NotebookApp] Saving 01_training.ipynb
+[I 17:10:35.743 NotebookApp] Saving file at /01_training.ipynb
+[I 17:10:35.744 NotebookApp] Saving 01_training.ipynb
+[I 17:12:35.769 NotebookApp] Saving file at /01_training.ipynb
+[I 17:12:35.770 NotebookApp] Saving 01_training.ipynb
+[I 17:14:35.748 NotebookApp] Saving file at /01_training.ipynb
+[I 17:14:35.749 NotebookApp] Saving 01_training.ipynb
+[I 17:16:35.749 NotebookApp] Saving file at /01_training.ipynb
+[I 17:16:35.750 NotebookApp] Saving 01_training.ipynb
+[I 17:18:35.734 NotebookApp] Saving file at /01_training.ipynb
+[I 17:18:35.734 NotebookApp] Saving 01_training.ipynb
+[I 17:20:35.745 NotebookApp] Saving file at /01_training.ipynb
+[I 17:20:35.746 NotebookApp] Saving 01_training.ipynb
+[I 17:22:35.746 NotebookApp] Saving file at /01_training.ipynb
+[I 17:22:35.747 NotebookApp] Saving 01_training.ipynb
+[I 17:24:35.765 NotebookApp] Saving file at /01_training.ipynb
+[I 17:24:35.766 NotebookApp] Saving 01_training.ipynb
+[I 17:26:35.800 NotebookApp] Saving file at /01_training.ipynb
+[I 17:26:35.801 NotebookApp] Saving 01_training.ipynb
+[I 17:28:35.767 NotebookApp] Saving file at /01_training.ipynb
+[I 17:28:35.768 NotebookApp] Saving 01_training.ipynb
+[I 17:30:35.765 NotebookApp] Saving file at /01_training.ipynb
+[I 17:30:35.766 NotebookApp] Saving 01_training.ipynb
+[I 17:32:35.759 NotebookApp] Saving file at /01_training.ipynb
+[I 17:32:35.760 NotebookApp] Saving 01_training.ipynb
+[I 17:34:35.743 NotebookApp] Saving file at /01_training.ipynb
+[I 17:34:35.745 NotebookApp] Saving 01_training.ipynb
+[I 17:36:35.767 NotebookApp] Saving file at /01_training.ipynb
+[I 17:36:35.768 NotebookApp] Saving 01_training.ipynb
+[I 17:38:35.771 NotebookApp] Saving file at /01_training.ipynb
+[I 17:38:35.772 NotebookApp] Saving 01_training.ipynb
+[I 17:40:35.765 NotebookApp] Saving file at /01_training.ipynb
+[I 17:40:35.766 NotebookApp] Saving 01_training.ipynb
+[I 17:42:35.784 NotebookApp] Saving file at /01_training.ipynb
+[I 17:42:35.785 NotebookApp] Saving 01_training.ipynb
+[I 17:44:35.769 NotebookApp] Saving file at /01_training.ipynb
+[I 17:44:35.770 NotebookApp] Saving 01_training.ipynb
+[I 17:46:35.758 NotebookApp] Saving file at /01_training.ipynb
+[I 17:46:35.759 NotebookApp] Saving 01_training.ipynb
+[I 17:48:35.753 NotebookApp] Saving file at /01_training.ipynb
+[I 17:48:35.754 NotebookApp] Saving 01_training.ipynb
+[I 17:48:47.144 NotebookApp] 302 GET / (162.142.125.195) 0.590000ms
+[I 17:48:47.602 NotebookApp] 302 GET / (162.142.125.195) 0.820000ms
+[I 17:48:48.422 NotebookApp] 302 GET /tree (162.142.125.195) 0.970000ms
+[I 17:50:35.750 NotebookApp] Saving file at /01_training.ipynb
+[I 17:50:35.751 NotebookApp] Saving 01_training.ipynb
+[I 17:52:35.777 NotebookApp] Saving file at /01_training.ipynb
+[I 17:52:35.778 NotebookApp] Saving 01_training.ipynb
+[I 17:54:35.748 NotebookApp] Saving file at /01_training.ipynb
+[I 17:54:35.749 NotebookApp] Saving 01_training.ipynb
+[I 17:56:35.754 NotebookApp] Saving file at /01_training.ipynb
+[I 17:56:35.755 NotebookApp] Saving 01_training.ipynb
+[I 17:58:35.746 NotebookApp] Saving file at /01_training.ipynb
+[I 17:58:35.747 NotebookApp] Saving 01_training.ipynb
+[I 18:00:35.747 NotebookApp] Saving file at /01_training.ipynb
+[I 18:00:35.748 NotebookApp] Saving 01_training.ipynb
+[I 18:02:35.762 NotebookApp] Saving file at /01_training.ipynb
+[I 18:02:35.763 NotebookApp] Saving 01_training.ipynb
+[I 18:04:35.760 NotebookApp] Saving file at /01_training.ipynb
+[I 18:04:35.761 NotebookApp] Saving 01_training.ipynb
+[I 18:06:35.755 NotebookApp] Saving file at /01_training.ipynb
+[I 18:06:35.755 NotebookApp] Saving 01_training.ipynb
+[I 18:07:18.022 NotebookApp] 302 GET / (209.17.97.114) 0.770000ms
+[I 18:08:35.754 NotebookApp] Saving file at /01_training.ipynb
+[I 18:08:35.755 NotebookApp] Saving 01_training.ipynb
+[I 18:10:35.765 NotebookApp] Saving file at /01_training.ipynb
+[I 18:10:35.766 NotebookApp] Saving 01_training.ipynb
+[I 18:12:35.832 NotebookApp] Saving file at /01_training.ipynb
+[I 18:12:35.832 NotebookApp] Saving 01_training.ipynb
+[I 18:14:35.778 NotebookApp] Saving file at /01_training.ipynb
+[I 18:14:35.779 NotebookApp] Saving 01_training.ipynb
+[I 18:16:35.778 NotebookApp] Saving file at /01_training.ipynb
+[I 18:16:35.778 NotebookApp] Saving 01_training.ipynb
+[I 18:18:35.780 NotebookApp] Saving file at /01_training.ipynb
+[I 18:18:35.781 NotebookApp] Saving 01_training.ipynb
+[I 18:20:35.755 NotebookApp] Saving file at /01_training.ipynb
+[I 18:20:35.755 NotebookApp] Saving 01_training.ipynb
+[I 18:22:35.757 NotebookApp] Saving file at /01_training.ipynb
+[I 18:22:35.758 NotebookApp] Saving 01_training.ipynb
+[I 18:24:35.768 NotebookApp] Saving file at /01_training.ipynb
+[I 18:24:35.769 NotebookApp] Saving 01_training.ipynb
+[I 18:26:35.758 NotebookApp] Saving file at /01_training.ipynb
+[I 18:26:35.759 NotebookApp] Saving 01_training.ipynb
+[I 18:28:35.746 NotebookApp] Saving file at /01_training.ipynb
+[I 18:28:35.747 NotebookApp] Saving 01_training.ipynb
+[I 18:30:35.776 NotebookApp] Saving file at /01_training.ipynb
+[I 18:30:35.778 NotebookApp] Saving 01_training.ipynb
+[I 18:32:35.778 NotebookApp] Saving file at /01_training.ipynb
+[I 18:32:35.778 NotebookApp] Saving 01_training.ipynb
+[I 18:34:35.752 NotebookApp] Saving file at /01_training.ipynb
+[I 18:34:35.753 NotebookApp] Saving 01_training.ipynb
+[I 18:36:35.758 NotebookApp] Saving file at /01_training.ipynb
+[I 18:36:35.759 NotebookApp] Saving 01_training.ipynb
+[I 18:38:35.772 NotebookApp] Saving file at /01_training.ipynb
+[I 18:38:35.772 NotebookApp] Saving 01_training.ipynb
+[I 18:40:35.768 NotebookApp] Saving file at /01_training.ipynb
+[I 18:40:35.769 NotebookApp] Saving 01_training.ipynb
+[I 18:42:35.770 NotebookApp] Saving file at /01_training.ipynb
+[I 18:42:35.771 NotebookApp] Saving 01_training.ipynb
+[I 18:44:35.754 NotebookApp] Saving file at /01_training.ipynb
+[I 18:44:35.755 NotebookApp] Saving 01_training.ipynb
+[I 18:46:35.752 NotebookApp] Saving file at /01_training.ipynb
+[I 18:46:35.752 NotebookApp] Saving 01_training.ipynb
+[I 18:48:36.158 NotebookApp] Saving file at /01_training.ipynb
+[I 18:48:36.159 NotebookApp] Saving 01_training.ipynb
+[I 18:50:35.775 NotebookApp] Saving file at /01_training.ipynb
+[I 18:50:35.776 NotebookApp] Saving 01_training.ipynb
+[I 18:52:35.770 NotebookApp] Saving file at /01_training.ipynb
+[I 18:52:35.770 NotebookApp] Saving 01_training.ipynb
+[I 18:54:35.771 NotebookApp] Saving file at /01_training.ipynb
+[I 18:54:35.772 NotebookApp] Saving 01_training.ipynb
+[I 18:56:35.781 NotebookApp] Saving file at /01_training.ipynb
+[I 18:56:35.782 NotebookApp] Saving 01_training.ipynb
+[I 18:58:35.790 NotebookApp] Saving file at /01_training.ipynb
+[I 18:58:35.791 NotebookApp] Saving 01_training.ipynb
+[I 19:00:35.822 NotebookApp] Saving file at /01_training.ipynb
+[I 19:00:35.823 NotebookApp] Saving 01_training.ipynb
+[I 19:02:35.858 NotebookApp] Saving file at /01_training.ipynb
+[I 19:02:35.859 NotebookApp] Saving 01_training.ipynb
+[I 19:04:35.793 NotebookApp] Saving file at /01_training.ipynb
+[I 19:04:35.793 NotebookApp] Saving 01_training.ipynb
+[I 19:06:35.802 NotebookApp] Saving file at /01_training.ipynb
+[I 19:06:35.803 NotebookApp] Saving 01_training.ipynb
+[I 19:08:35.795 NotebookApp] Saving file at /01_training.ipynb
+[I 19:08:35.796 NotebookApp] Saving 01_training.ipynb
+[I 19:10:35.778 NotebookApp] Saving file at /01_training.ipynb
+[I 19:10:35.779 NotebookApp] Saving 01_training.ipynb
+[I 19:12:35.792 NotebookApp] Saving file at /01_training.ipynb
+[I 19:12:35.793 NotebookApp] Saving 01_training.ipynb
+[I 19:14:35.797 NotebookApp] Saving file at /01_training.ipynb
+[I 19:14:35.798 NotebookApp] Saving 01_training.ipynb
+[I 19:16:35.771 NotebookApp] Saving file at /01_training.ipynb
+[I 19:16:35.772 NotebookApp] Saving 01_training.ipynb
+[I 19:18:35.794 NotebookApp] Saving file at /01_training.ipynb
+[I 19:18:35.795 NotebookApp] Saving 01_training.ipynb
+[I 19:20:35.804 NotebookApp] Saving file at /01_training.ipynb
+[I 19:20:35.805 NotebookApp] Saving 01_training.ipynb
+[I 19:22:35.813 NotebookApp] Saving file at /01_training.ipynb
+[I 19:22:35.814 NotebookApp] Saving 01_training.ipynb
+[I 19:24:35.805 NotebookApp] Saving file at /01_training.ipynb
+[I 19:24:35.806 NotebookApp] Saving 01_training.ipynb
+[I 19:24:49.684 NotebookApp] 302 GET / (209.17.97.50) 0.680000ms
+[I 19:24:50.107 NotebookApp] 302 GET /tree (209.17.97.50) 0.760000ms
+[I 19:26:35.792 NotebookApp] Saving file at /01_training.ipynb
+[I 19:26:35.793 NotebookApp] Saving 01_training.ipynb
+[I 19:28:35.782 NotebookApp] Saving file at /01_training.ipynb
+[I 19:28:35.783 NotebookApp] Saving 01_training.ipynb
+[I 19:30:35.805 NotebookApp] Saving file at /01_training.ipynb
+[I 19:30:35.805 NotebookApp] Saving 01_training.ipynb
+[I 19:32:35.789 NotebookApp] Saving file at /01_training.ipynb
+[I 19:32:35.789 NotebookApp] Saving 01_training.ipynb
+[I 19:34:35.808 NotebookApp] Saving file at /01_training.ipynb
+[I 19:34:35.809 NotebookApp] Saving 01_training.ipynb
+[I 19:36:35.865 NotebookApp] Saving file at /01_training.ipynb
+[I 19:36:35.866 NotebookApp] Saving 01_training.ipynb
+[I 19:38:35.785 NotebookApp] Saving file at /01_training.ipynb
+[I 19:38:35.786 NotebookApp] Saving 01_training.ipynb
+[I 19:40:35.840 NotebookApp] Saving file at /01_training.ipynb
+[I 19:40:35.842 NotebookApp] Saving 01_training.ipynb
+[I 19:42:35.836 NotebookApp] Saving file at /01_training.ipynb
+[I 19:42:35.837 NotebookApp] Saving 01_training.ipynb
+[I 19:44:35.819 NotebookApp] Saving file at /01_training.ipynb
+[I 19:44:35.820 NotebookApp] Saving 01_training.ipynb
+[I 19:46:35.839 NotebookApp] Saving file at /01_training.ipynb
+[I 19:46:35.840 NotebookApp] Saving 01_training.ipynb
+[I 19:48:35.811 NotebookApp] Saving file at /01_training.ipynb
+[I 19:48:35.812 NotebookApp] Saving 01_training.ipynb
+[I 19:50:35.840 NotebookApp] Saving file at /01_training.ipynb
+[I 19:50:35.841 NotebookApp] Saving 01_training.ipynb
+[I 19:52:35.818 NotebookApp] Saving file at /01_training.ipynb
+[I 19:52:35.818 NotebookApp] Saving 01_training.ipynb
+[I 19:54:35.815 NotebookApp] Saving file at /01_training.ipynb
+[I 19:54:35.815 NotebookApp] Saving 01_training.ipynb
+[I 19:56:35.841 NotebookApp] Saving file at /01_training.ipynb
+[I 19:56:35.842 NotebookApp] Saving 01_training.ipynb
+[I 19:58:35.820 NotebookApp] Saving file at /01_training.ipynb
+[I 19:58:35.821 NotebookApp] Saving 01_training.ipynb
+[I 20:00:35.805 NotebookApp] Saving file at /01_training.ipynb
+[I 20:00:35.806 NotebookApp] Saving 01_training.ipynb
+[I 20:02:35.789 NotebookApp] Saving file at /01_training.ipynb
+[I 20:02:35.790 NotebookApp] Saving 01_training.ipynb
+[I 20:04:35.787 NotebookApp] Saving file at /01_training.ipynb
+[I 20:04:35.788 NotebookApp] Saving 01_training.ipynb
+[I 20:06:35.788 NotebookApp] Saving file at /01_training.ipynb
+[I 20:06:35.789 NotebookApp] Saving 01_training.ipynb
+[I 20:08:35.785 NotebookApp] Saving file at /01_training.ipynb
+[I 20:08:35.786 NotebookApp] Saving 01_training.ipynb
+[I 20:10:35.802 NotebookApp] Saving file at /01_training.ipynb
+[I 20:10:35.803 NotebookApp] Saving 01_training.ipynb
+[I 20:12:35.803 NotebookApp] Saving file at /01_training.ipynb
+[I 20:12:35.805 NotebookApp] Saving 01_training.ipynb
+[I 20:14:35.817 NotebookApp] Saving file at /01_training.ipynb
+[I 20:14:35.818 NotebookApp] Saving 01_training.ipynb
+[I 20:16:35.812 NotebookApp] Saving file at /01_training.ipynb
+[I 20:16:35.813 NotebookApp] Saving 01_training.ipynb
+[I 20:18:35.816 NotebookApp] Saving file at /01_training.ipynb
+[I 20:18:35.817 NotebookApp] Saving 01_training.ipynb
+[I 20:20:35.841 NotebookApp] Saving file at /01_training.ipynb
+[I 20:20:35.842 NotebookApp] Saving 01_training.ipynb
+[I 20:22:35.823 NotebookApp] Saving file at /01_training.ipynb
+[I 20:22:35.823 NotebookApp] Saving 01_training.ipynb
+[I 20:24:35.809 NotebookApp] Saving file at /01_training.ipynb
+[I 20:24:35.810 NotebookApp] Saving 01_training.ipynb
+[I 20:26:35.815 NotebookApp] Saving file at /01_training.ipynb
+[I 20:26:35.816 NotebookApp] Saving 01_training.ipynb
+[I 20:28:35.839 NotebookApp] Saving file at /01_training.ipynb
+[I 20:28:35.840 NotebookApp] Saving 01_training.ipynb
+[I 20:30:35.821 NotebookApp] Saving file at /01_training.ipynb
+[I 20:30:35.822 NotebookApp] Saving 01_training.ipynb
+[I 20:32:35.817 NotebookApp] Saving file at /01_training.ipynb
+[I 20:32:35.818 NotebookApp] Saving 01_training.ipynb
+[I 20:34:35.805 NotebookApp] Saving file at /01_training.ipynb
+[I 20:34:35.806 NotebookApp] Saving 01_training.ipynb
+[I 20:36:35.800 NotebookApp] Saving file at /01_training.ipynb
+[I 20:36:35.801 NotebookApp] Saving 01_training.ipynb
+[I 20:38:35.810 NotebookApp] Saving file at /01_training.ipynb
+[I 20:38:35.811 NotebookApp] Saving 01_training.ipynb
+[I 20:40:36.762 NotebookApp] Saving file at /01_training.ipynb
+[I 20:40:36.763 NotebookApp] Saving 01_training.ipynb
+[I 20:42:35.814 NotebookApp] Saving file at /01_training.ipynb
+[I 20:42:35.815 NotebookApp] Saving 01_training.ipynb
+[I 20:44:35.820 NotebookApp] Saving file at /01_training.ipynb
+[I 20:44:35.821 NotebookApp] Saving 01_training.ipynb
+[I 20:46:35.969 NotebookApp] Saving file at /01_training.ipynb
+[I 20:46:35.970 NotebookApp] Saving 01_training.ipynb
+[I 20:48:35.823 NotebookApp] Saving file at /01_training.ipynb
+[I 20:48:35.824 NotebookApp] Saving 01_training.ipynb
+[I 20:50:35.832 NotebookApp] Saving file at /01_training.ipynb
+[I 20:50:35.833 NotebookApp] Saving 01_training.ipynb
+[I 20:52:35.948 NotebookApp] Saving file at /01_training.ipynb
+[I 20:52:35.949 NotebookApp] Saving 01_training.ipynb
+[I 20:54:35.871 NotebookApp] Saving file at /01_training.ipynb
+[I 20:54:35.873 NotebookApp] Saving 01_training.ipynb
+[I 20:56:35.820 NotebookApp] Saving file at /01_training.ipynb
+[I 20:56:35.821 NotebookApp] Saving 01_training.ipynb
+[I 20:58:35.802 NotebookApp] Saving file at /01_training.ipynb
+[I 20:58:35.803 NotebookApp] Saving 01_training.ipynb
+[I 21:00:35.839 NotebookApp] Saving file at /01_training.ipynb
+[I 21:00:35.840 NotebookApp] Saving 01_training.ipynb
+[I 21:02:35.879 NotebookApp] Saving file at /01_training.ipynb
+[I 21:02:35.880 NotebookApp] Saving 01_training.ipynb
+[I 21:04:35.807 NotebookApp] Saving file at /01_training.ipynb
+[I 21:04:35.808 NotebookApp] Saving 01_training.ipynb
+[I 21:06:35.822 NotebookApp] Saving file at /01_training.ipynb
+[I 21:06:35.823 NotebookApp] Saving 01_training.ipynb
+[I 21:08:35.803 NotebookApp] Saving file at /01_training.ipynb
+[I 21:08:35.804 NotebookApp] Saving 01_training.ipynb
+[I 21:10:35.834 NotebookApp] Saving file at /01_training.ipynb
+[I 21:10:35.835 NotebookApp] Saving 01_training.ipynb
+[I 21:12:35.850 NotebookApp] Saving file at /01_training.ipynb
+[I 21:12:35.851 NotebookApp] Saving 01_training.ipynb
+[I 21:14:35.832 NotebookApp] Saving file at /01_training.ipynb
+[I 21:14:35.833 NotebookApp] Saving 01_training.ipynb
+[I 21:16:35.846 NotebookApp] Saving file at /01_training.ipynb
+[I 21:16:35.847 NotebookApp] Saving 01_training.ipynb
+[I 21:18:35.847 NotebookApp] Saving file at /01_training.ipynb
+[I 21:18:35.848 NotebookApp] Saving 01_training.ipynb
+[I 21:20:35.829 NotebookApp] Saving file at /01_training.ipynb
+[I 21:20:35.831 NotebookApp] Saving 01_training.ipynb
+[I 21:22:35.865 NotebookApp] Saving file at /01_training.ipynb
+[I 21:22:35.866 NotebookApp] Saving 01_training.ipynb
+[I 21:24:35.863 NotebookApp] Saving file at /01_training.ipynb
+[I 21:24:35.863 NotebookApp] Saving 01_training.ipynb
+[I 21:26:35.865 NotebookApp] Saving file at /01_training.ipynb
+[I 21:26:35.866 NotebookApp] Saving 01_training.ipynb
+[I 21:28:35.850 NotebookApp] Saving file at /01_training.ipynb
+[I 21:28:35.851 NotebookApp] Saving 01_training.ipynb
+[I 21:30:35.832 NotebookApp] Saving file at /01_training.ipynb
+[I 21:30:35.833 NotebookApp] Saving 01_training.ipynb
+[I 21:32:35.877 NotebookApp] Saving file at /01_training.ipynb
+[I 21:32:35.878 NotebookApp] Saving 01_training.ipynb
+[I 21:34:35.848 NotebookApp] Saving file at /01_training.ipynb
+[I 21:34:35.849 NotebookApp] Saving 01_training.ipynb
+[I 21:36:36.416 NotebookApp] Saving file at /01_training.ipynb
+[I 21:36:36.417 NotebookApp] Saving 01_training.ipynb
+[I 21:38:36.102 NotebookApp] Saving file at /01_training.ipynb
+[I 21:38:36.103 NotebookApp] Saving 01_training.ipynb
+[I 21:40:35.985 NotebookApp] Saving file at /01_training.ipynb
+[I 21:40:35.986 NotebookApp] Saving 01_training.ipynb
+[I 21:42:35.865 NotebookApp] Saving file at /01_training.ipynb
+[I 21:42:35.866 NotebookApp] Saving 01_training.ipynb
+[I 21:44:36.845 NotebookApp] Saving file at /01_training.ipynb
+[I 21:44:36.846 NotebookApp] Saving 01_training.ipynb
+[I 21:46:35.866 NotebookApp] Saving file at /01_training.ipynb
+[I 21:46:35.867 NotebookApp] Saving 01_training.ipynb
+[I 21:48:35.856 NotebookApp] Saving file at /01_training.ipynb
+[I 21:48:35.857 NotebookApp] Saving 01_training.ipynb
+[I 21:50:35.864 NotebookApp] Saving file at /01_training.ipynb
+[I 21:50:35.865 NotebookApp] Saving 01_training.ipynb
+[I 21:52:35.870 NotebookApp] Saving file at /01_training.ipynb
+[I 21:52:35.871 NotebookApp] Saving 01_training.ipynb
+[I 21:54:35.840 NotebookApp] Saving file at /01_training.ipynb
+[I 21:54:35.841 NotebookApp] Saving 01_training.ipynb
+[I 21:56:35.856 NotebookApp] Saving file at /01_training.ipynb
+[I 21:56:35.857 NotebookApp] Saving 01_training.ipynb
+[I 21:58:35.894 NotebookApp] Saving file at /01_training.ipynb
+[I 21:58:35.895 NotebookApp] Saving 01_training.ipynb
+[I 22:00:35.898 NotebookApp] Saving file at /01_training.ipynb
+[I 22:00:35.899 NotebookApp] Saving 01_training.ipynb
+[I 22:02:35.877 NotebookApp] Saving file at /01_training.ipynb
+[I 22:02:35.878 NotebookApp] Saving 01_training.ipynb
+[I 22:04:35.859 NotebookApp] Saving file at /01_training.ipynb
+[I 22:04:35.860 NotebookApp] Saving 01_training.ipynb
+[I 22:06:35.852 NotebookApp] Saving file at /01_training.ipynb
+[I 22:06:35.853 NotebookApp] Saving 01_training.ipynb
+[I 22:08:35.840 NotebookApp] Saving file at /01_training.ipynb
+[I 22:08:35.841 NotebookApp] Saving 01_training.ipynb
+[I 22:10:35.894 NotebookApp] Saving file at /01_training.ipynb
+[I 22:10:35.895 NotebookApp] Saving 01_training.ipynb
+[I 22:12:35.919 NotebookApp] Saving file at /01_training.ipynb
+[I 22:12:35.920 NotebookApp] Saving 01_training.ipynb
+[I 22:14:35.899 NotebookApp] Saving file at /01_training.ipynb
+[I 22:14:35.900 NotebookApp] Saving 01_training.ipynb
+[I 22:16:35.920 NotebookApp] Saving file at /01_training.ipynb
+[I 22:16:35.921 NotebookApp] Saving 01_training.ipynb
+[I 22:18:35.913 NotebookApp] Saving file at /01_training.ipynb
+[I 22:18:35.914 NotebookApp] Saving 01_training.ipynb
+[I 22:20:35.946 NotebookApp] Saving file at /01_training.ipynb
+[I 22:20:35.947 NotebookApp] Saving 01_training.ipynb
+[I 22:22:35.921 NotebookApp] Saving file at /01_training.ipynb
+[I 22:22:35.922 NotebookApp] Saving 01_training.ipynb
+[I 22:24:35.969 NotebookApp] Saving file at /01_training.ipynb
+[I 22:24:35.969 NotebookApp] Saving 01_training.ipynb
+[I 22:26:35.936 NotebookApp] Saving file at /01_training.ipynb
+[I 22:26:35.937 NotebookApp] Saving 01_training.ipynb
+[I 22:28:35.913 NotebookApp] Saving file at /01_training.ipynb
+[I 22:28:35.914 NotebookApp] Saving 01_training.ipynb
+[I 22:30:35.911 NotebookApp] Saving file at /01_training.ipynb
+[I 22:30:35.912 NotebookApp] Saving 01_training.ipynb
+[I 22:32:35.895 NotebookApp] Saving file at /01_training.ipynb
+[I 22:32:35.896 NotebookApp] Saving 01_training.ipynb
+[I 22:34:35.910 NotebookApp] Saving file at /01_training.ipynb
+[I 22:34:35.911 NotebookApp] Saving 01_training.ipynb
+[I 22:36:35.905 NotebookApp] Saving file at /01_training.ipynb
+[I 22:36:35.905 NotebookApp] Saving 01_training.ipynb
+[I 22:38:35.927 NotebookApp] Saving file at /01_training.ipynb
+[I 22:38:35.928 NotebookApp] Saving 01_training.ipynb
+[I 22:40:35.991 NotebookApp] Saving file at /01_training.ipynb
+[I 22:40:35.992 NotebookApp] Saving 01_training.ipynb
+[I 22:42:35.995 NotebookApp] Saving file at /01_training.ipynb
+[I 22:42:35.996 NotebookApp] Saving 01_training.ipynb
+[I 22:44:35.958 NotebookApp] Saving file at /01_training.ipynb
+[I 22:44:35.959 NotebookApp] Saving 01_training.ipynb
+[I 22:46:35.928 NotebookApp] Saving file at /01_training.ipynb
+[I 22:46:35.929 NotebookApp] Saving 01_training.ipynb
+[I 22:48:35.965 NotebookApp] Saving file at /01_training.ipynb
+[I 22:48:35.966 NotebookApp] Saving 01_training.ipynb
+[I 22:50:35.964 NotebookApp] Saving file at /01_training.ipynb
+[I 22:50:35.964 NotebookApp] Saving 01_training.ipynb
+[I 22:52:35.984 NotebookApp] Saving file at /01_training.ipynb
+[I 22:52:35.985 NotebookApp] Saving 01_training.ipynb
+[I 22:54:35.966 NotebookApp] Saving file at /01_training.ipynb
+[I 22:54:35.967 NotebookApp] Saving 01_training.ipynb
+[I 22:56:35.964 NotebookApp] Saving file at /01_training.ipynb
+[I 22:56:35.965 NotebookApp] Saving 01_training.ipynb
+[I 22:58:35.976 NotebookApp] Saving file at /01_training.ipynb
+[I 22:58:35.976 NotebookApp] Saving 01_training.ipynb
+[I 23:00:35.974 NotebookApp] Saving file at /01_training.ipynb
+[I 23:00:35.975 NotebookApp] Saving 01_training.ipynb
+[I 23:02:35.967 NotebookApp] Saving file at /01_training.ipynb
+[I 23:02:35.967 NotebookApp] Saving 01_training.ipynb
+[I 23:04:35.965 NotebookApp] Saving file at /01_training.ipynb
+[I 23:04:35.966 NotebookApp] Saving 01_training.ipynb
+[I 23:06:35.978 NotebookApp] Saving file at /01_training.ipynb
+[I 23:06:35.979 NotebookApp] Saving 01_training.ipynb
+[I 23:08:35.977 NotebookApp] Saving file at /01_training.ipynb
+[I 23:08:35.979 NotebookApp] Saving 01_training.ipynb
+[I 23:10:36.120 NotebookApp] Saving file at /01_training.ipynb
+[I 23:10:36.121 NotebookApp] Saving 01_training.ipynb
+[I 23:12:35.959 NotebookApp] Saving file at /01_training.ipynb
+[I 23:12:35.960 NotebookApp] Saving 01_training.ipynb
+[I 23:14:35.979 NotebookApp] Saving file at /01_training.ipynb
+[I 23:14:35.980 NotebookApp] Saving 01_training.ipynb
+[I 23:16:35.971 NotebookApp] Saving file at /01_training.ipynb
+[I 23:16:35.972 NotebookApp] Saving 01_training.ipynb
+[I 23:18:35.975 NotebookApp] Saving file at /01_training.ipynb
+[I 23:18:35.976 NotebookApp] Saving 01_training.ipynb
+[I 23:20:35.970 NotebookApp] Saving file at /01_training.ipynb
+[I 23:20:35.971 NotebookApp] Saving 01_training.ipynb
+[I 23:22:35.947 NotebookApp] Saving file at /01_training.ipynb
+[I 23:22:35.948 NotebookApp] Saving 01_training.ipynb
+[I 23:24:35.963 NotebookApp] Saving file at /01_training.ipynb
+[I 23:24:35.964 NotebookApp] Saving 01_training.ipynb
+[I 23:26:35.977 NotebookApp] Saving file at /01_training.ipynb
+[I 23:26:35.978 NotebookApp] Saving 01_training.ipynb
+[I 23:28:35.917 NotebookApp] Saving file at /01_training.ipynb
+[I 23:28:35.918 NotebookApp] Saving 01_training.ipynb
+[I 23:30:35.967 NotebookApp] Saving file at /01_training.ipynb
+[I 23:30:35.968 NotebookApp] Saving 01_training.ipynb
+[I 23:32:35.944 NotebookApp] Saving file at /01_training.ipynb
+[I 23:32:35.945 NotebookApp] Saving 01_training.ipynb
+[I 23:34:35.982 NotebookApp] Saving file at /01_training.ipynb
+[I 23:34:35.982 NotebookApp] Saving 01_training.ipynb
+[I 23:36:35.951 NotebookApp] Saving file at /01_training.ipynb
+[I 23:36:35.952 NotebookApp] Saving 01_training.ipynb
+[I 23:38:35.925 NotebookApp] Saving file at /01_training.ipynb
+[I 23:38:35.925 NotebookApp] Saving 01_training.ipynb
+[I 23:40:35.951 NotebookApp] Saving file at /01_training.ipynb
+[I 23:40:35.952 NotebookApp] Saving 01_training.ipynb
+[I 23:42:35.924 NotebookApp] Saving file at /01_training.ipynb
+[I 23:42:35.925 NotebookApp] Saving 01_training.ipynb
+[I 23:44:35.915 NotebookApp] Saving file at /01_training.ipynb
+[I 23:44:35.916 NotebookApp] Saving 01_training.ipynb
+[I 23:46:30.246 NotebookApp] Starting buffering for 7e04351c-07bb-4e05-afa6-44070ed3808c:d7387afd213044c186016544a2a6c1d1
+[W 01:37:11.490 NotebookApp] Config option `template_path` not recognized by `ExporterCollapsibleHeadings`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:11.497 NotebookApp] Config option `template_path` not recognized by `ExporterCollapsibleHeadings`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:11.525 NotebookApp] Config option `template_path` not recognized by `TocExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:11.530 NotebookApp] Config option `template_path` not recognized by `TocExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:11.541 NotebookApp] Config option `template_path` not recognized by `LenvsHTMLExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:11.550 NotebookApp] Config option `template_path` not recognized by `LenvsHTMLExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:11.564 NotebookApp] Config option `template_path` not recognized by `LenvsTocHTMLExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:11.573 NotebookApp] Config option `template_path` not recognized by `LenvsTocHTMLExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:11.598 NotebookApp] Config option `template_path` not recognized by `LenvsLatexExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:11.603 NotebookApp] Config option `template_path` not recognized by `LenvsLatexExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:11.703 NotebookApp] Config option `template_path` not recognized by `LenvsSlidesExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:11.708 NotebookApp] Config option `template_path` not recognized by `LenvsSlidesExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:11.794 NotebookApp] Config option `template_path` not recognized by `ExporterCollapsibleHeadings`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:11.805 NotebookApp] Config option `template_path` not recognized by `ExporterCollapsibleHeadings`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:11.846 NotebookApp] Config option `template_path` not recognized by `TocExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:11.854 NotebookApp] Config option `template_path` not recognized by `TocExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:11.868 NotebookApp] Config option `template_path` not recognized by `LenvsHTMLExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:11.881 NotebookApp] Config option `template_path` not recognized by `LenvsHTMLExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:11.901 NotebookApp] Config option `template_path` not recognized by `LenvsTocHTMLExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:11.914 NotebookApp] Config option `template_path` not recognized by `LenvsTocHTMLExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:11.952 NotebookApp] Config option `template_path` not recognized by `LenvsLatexExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:11.959 NotebookApp] Config option `template_path` not recognized by `LenvsLatexExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:12.195 NotebookApp] Config option `template_path` not recognized by `LenvsSlidesExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[W 01:37:12.202 NotebookApp] Config option `template_path` not recognized by `LenvsSlidesExporter`.  Did you mean one of: `extra_template_paths, template_name, template_paths`?
+[I 01:37:24.907 NotebookApp] Discarding 25333 buffered messages for 7e04351c-07bb-4e05-afa6-44070ed3808c:d7387afd213044c186016544a2a6c1d1
+[C 05:21:38.241 NotebookApp] received signal 15, stopping
+[I 05:21:38.242 NotebookApp] Shutting down 1 kernel
+[I 05:21:38.250 NotebookApp] Kernel shutdown: 7e04351c-07bb-4e05-afa6-44070ed3808c
+[I 05:21:38.755 NotebookApp] Shutting down 0 terminals
+jupyter_http_over_ws extension initialized. Listening on /http_over_websocket

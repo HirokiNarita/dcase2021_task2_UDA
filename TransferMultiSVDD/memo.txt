@@ -1,0 +1,5 @@
+exp1:前のやつ
+exp2:mixupして，重みでcenter最適化
+exp3:ボツ 最後のconvをパラメタ更新
+exp4:ボツ mixupの場所かえる
+exp5:exp2にoutlier項追加

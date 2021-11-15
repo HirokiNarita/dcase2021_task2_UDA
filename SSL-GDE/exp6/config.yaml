@@ -1,0 +1,23 @@
+IO_OPTION:
+  INPUT_ROOT: '/media/dataset-disk/datasets'
+  OUTPUT_ROOT: '/media/output-disk/domain_adaptation/CCL-GDE/exp6'
+  
+param:
+  # feature
+  sample_rate: 16000
+  window_size: 1024
+  hop_size: 512
+  mel_bins: 128
+  fmin: 60
+  fmax: 7800
+  # subseq
+  n_crop_frames: 64
+  n_hop_frames: 0
+  # dataloader
+  lr : 0.0001
+  batch_size : 256
+  shuffle : True
+  num_epochs : 100
+  # etc
+  devise : 'cuda'
+  max_fpr : 0.1

@@ -17,7 +17,7 @@ class CenterLoss(nn.Module):
         self.num_class = num_class
         self.num_feature = num_feature
         self.centers = nn.Parameter(torch.randn(self.num_class, self.num_feature))
-        self.k = 0.5
+        self.k = 0.1
 
     def replace_label(self, labels, outlier_num=99):
         # 7の倍数を置き換え（もっと適切な方法があるはず）
@@ -45,7 +45,6 @@ class CenterLoss(nn.Module):
         if self.training == True:
             outlier_idx = (labels == 99).nonzero().to('cpu')
             outlier_x, outlier_label = x[outlier_idx], labels[outlier_idx]
-            outlier_x = x[outlier_idx]
             # 怪しい
             outlier_dist = (outlier_x-self.centers.unsqueeze(0)).pow(2)
             loss = inlier_dist.mean() - self.k * outlier_dist.mean()
@@ -92,31 +91,75 @@ class EfficientNet_b1(nn.Module):
     def __init__(self, n_out=36, n_centers=6):
         super(EfficientNet_b1, self).__init__()
         self.bn0 = nn.BatchNorm2d(128)
-        #モデルの定義
+        #　モデルの定義
         self.effnet = timm.create_model('efficientnet_b1', pretrained=True)
         # forwardをover ride
         self.effnet.forward = self.effnet_forward
-        #最終層の再定義
+        #　最終層の再定義
         self.effnet.classifier = nn.Linear(1280, n_out)
         # section分類用のloss
         self.effnet_loss = nn.CrossEntropyLoss()
 
         # CenterLoss用のネットワーク
-        self.centerloss_net = CenterLossNet(1792, n_centers)
+        self.centerloss_net = CenterLossNet(1280, n_centers)
 
     def effnet_forward(self, x):
-        torch.cuda.empty_cache()
         x = self.effnet.forward_features(x)
         x = self.effnet.global_pool(x)
         if self.effnet.drop_rate > 0.:
             x = F.dropout(x, p=self.effnet.drop_rate, training=self.training)
         return x
-       
-    def forward_classifier(self, x, section_label):
-        x = self.effnet(x)
-        loss = self.effnet_loss(x, section_label)
-        return loss, section_label
     
-    def forward_centerloss(self, x, section_label):
-        loss, inlier_dist = self.centerloss_net(x, section_label)
-        return loss, inlier_dist
+    def mixup(self, data, label, alpha=1, debug=False, weights=0.4, n_classes=6, device='cuda:0'):
+        #data = data.to('cpu').detach().numpy().copy()
+        #label = label.to('cpu').detach().numpy().copy()
+        batch_size = len(data)
+        label_mat = torch.zeros((batch_size, n_classes, n_classes))    # (N, C_n, C_n)
+        index = np.random.permutation(batch_size)
+        x1, x2 = data, data[index]
+        y1, y2 = label, label[index]
+        x = torch.cat([
+            torch.unsqueeze(
+                x1[i,:,:,:]*weights + x2[i,:,:,:]*(1 - weights),
+                0) \
+                for i in range(batch_size)],
+                dim=0)
+        # onehot 2d matrix (batch, 6, 6) => onehot vector (batch, 36) => index vector (batch, 1)
+        for i in range(batch_size):
+            label_mat[i, y1[i], y2[i]] = 1  # onehot
+        # (classes: 0~35)
+        label_mat = torch.flatten(label_mat, start_dim=1, end_dim=-1).argmax(dim=1)
+        
+        return x, label_mat.cuda()
+
+    def forward(self, x, section_label):
+        x = x.transpose(1, 2)
+        x = self.bn0(x)
+        x = x.transpose(1, 2)
+        if self.training == True:
+            x, section_label = self.mixup(x, section_label)
+        else:
+            batch_size, n_classes = x.shape[0], 6
+            label_mat = torch.zeros((batch_size, n_classes, n_classes)).cuda()
+            for i in range(batch_size):
+                label_mat[i, section_label[i], section_label[i]] = 1  # onehot 
+            # (classes: 0~35)
+            section_label = torch.flatten(label_mat, start_dim=1, end_dim=-1).argmax(dim=1)
+        
+        # effnet
+        x = self.effnet(x)
+        classifier_loss = self.effnet_loss(x, section_label)
+        center_loss, pred = self.centerloss_net(x, section_label)
+        loss = classifier_loss + center_loss
+        
+        return loss, pred
+
+    # def forward_classifier(self, x, section_label):
+    #     x = self.effnet(x)
+    #     print(x.shape)
+    #     loss = self.effnet_loss(x, section_label)
+    #     return loss, section_label
+    
+    # def forward_centerloss(self, x, section_label):
+    #     loss, inlier_dist = self.centerloss_net(x, section_label)
+    #     return loss, inlier_dist
